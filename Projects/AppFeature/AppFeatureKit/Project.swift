@@ -2,30 +2,18 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 let project = Project.make(
-  name: "Root",
+  name: "AppFeatureKit",
   targets: [
     .target(
-      name: "RootScene",
+      name: "AppFeatureKit",
       destinations: [.iPhone],
       product: .staticLibrary,
-      bundleId: Const.appFeatureBundleId + ".RootScene",
+      bundleId: Const.appFeatureBundleId + ".AppFeatureKit",
       deploymentTargets: .iOS(Const.minimumTargetVersion),
-      sources: ["Targets/Scene/Sources/**"],
-      resources: ["Targets/Scene/Resources/**"],
+      sources: ["Sources/**"],
       dependencies: [
-        .external(name: "SnapKit", condition: .when(.all)),
-        .external(name: "Then", condition: .when(.all))
+        .project(target: "RootScene", path: "../Root", condition: .when(.all))
       ]
-    ),
-    .target(
-        name: "RootSceneTests",
-        destinations: .iOS,
-        product: .unitTests,
-        bundleId: Const.appFeatureBundleId + ".RootSceneTests",
-        deploymentTargets: .iOS(Const.minimumTargetVersion),
-        infoPlist: .default,
-        sources: ["Targets/Scene/Tests/**"],
-        dependencies: [.target(name: "RootScene")]
     ),
   ]
 )

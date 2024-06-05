@@ -6,8 +6,8 @@ public enum Const {
   
   public static let appBundleId = "com.tellingUs.tellingMe"
   public static let appCoreBundleId = "com.tellingUs.tellingMe.appcore"
-  public static let sharedBundleId = "com.tellingUs.tellingMe.shared"
   public static let appFeatureBundleId = "com.tellingUs.tellingMe.appfeature"
+  public static let sharedBundleId = "com.tellingUs.tellingMe.shared"
   
   // MARK: - Minimum Target Version
   

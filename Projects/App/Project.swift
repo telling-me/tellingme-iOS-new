@@ -26,8 +26,8 @@ let project = Project.make(
       resources: [Const.resourceFilePath],
       dependencies: [
         .project(
-            target: "RootScene",
-            path: .relativeToRoot("Projects/AppFeature/Root"),
+            target: "AppFeatureKit",
+            path: .relativeToRoot("Projects/AppFeature/AppFeatureKit"),
             condition: .when(.all)
         ),
         .external(name: "KakaoSDKCommon", condition: .when(.all))
