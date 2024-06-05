@@ -17,10 +17,3 @@ extension Project {
         )
     }
 }
-
-//extension SourceFilesList {
-//    public static func make(prefix: Self) -> Self {
-//        return "prefix/Sources/**"
-//    }
-//}
-//ProjectDescription.? = nil, resources: ProjectDescription.ResourceFileElements?

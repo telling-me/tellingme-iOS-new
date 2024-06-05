@@ -8,7 +8,7 @@ let project = Project.make(
       name: "SharedKit",
       destinations: [.iPhone],
       product: .staticLibrary,
-      bundleId: Const.sharedKitBundleId,
+      bundleId: Const.sharedBundleId + ".SharedKit",
       deploymentTargets: .iOS(Const.minimumTargetVersion),
       sources: ["SharedKit/**"],
       dependencies: [
@@ -18,7 +18,7 @@ let project = Project.make(
       name: "UtilKit",
       destinations: [.iPhone],
       product: .staticLibrary,
-      bundleId: Const.sharedUtilBundleId,
+      bundleId: Const.sharedBundleId + ".UtilKit",
       deploymentTargets: .iOS(Const.minimumTargetVersion),
       sources: ["Targets/UtilKit/**"]
     )

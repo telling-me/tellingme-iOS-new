@@ -8,7 +8,7 @@ let project = Project.make(
       name: "AppCoreKit",
       destinations: [.iPhone],
       product: .staticLibrary,
-      bundleId: Const.appCoreKitBundleId,
+      bundleId: Const.appCoreBundleId + ".AppCoreKit",
       deploymentTargets: .iOS(Const.minimumTargetVersion),
       sources: ["AppCoreKit/**"],
       dependencies: [
@@ -22,7 +22,7 @@ let project = Project.make(
       name: "Entity",
       destinations: [.iPhone],
       product: .staticLibrary,
-      bundleId: Const.appCoreEntityBundleId,
+      bundleId: Const.appCoreBundleId + ".Entity",
       deploymentTargets: .iOS(Const.minimumTargetVersion),
       sources: ["Entity/**"]
     ),
@@ -30,7 +30,7 @@ let project = Project.make(
       name: "DataSource",
       destinations: [.iPhone],
       product: .staticLibrary,
-      bundleId: Const.appCoreDatasourceBundleId,
+      bundleId: Const.appCoreBundleId + ".DataSource",
       deploymentTargets: .iOS(Const.minimumTargetVersion),
       sources: ["DataSource/**"]
     ),
@@ -38,7 +38,7 @@ let project = Project.make(
       name: "Networking",
       destinations: [.iPhone],
       product: .staticLibrary,
-      bundleId: Const.appCoreNetworkingBundleId,
+      bundleId: Const.appCoreBundleId + ".Networking",
       deploymentTargets: .iOS(Const.minimumTargetVersion),
       sources: ["Networking/**"]
     ),
@@ -46,7 +46,7 @@ let project = Project.make(
       name: "DesignSystem",
       destinations: [.iPhone],
       product: .staticLibrary,
-      bundleId: Const.appCoreDesignSystemBundleId,
+      bundleId: Const.appCoreBundleId + ".DesignSystem",
       deploymentTargets: .iOS(Const.minimumTargetVersion),
       sources: ["DesignSystem/**"]
     ),
