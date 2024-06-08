@@ -1,0 +1,31 @@
+import ProjectDescription
+import ProjectDescriptionHelpers
+
+let project = Project.make(
+  name: "{{ name }}",
+  targets: [
+    .target(
+      name: "{{ name }}Scene",
+      destinations: [.iPhone],
+      product: .staticLibrary,
+      bundleId: Const.appBundleId + "{{ name }}Scene",
+      deploymentTargets: .iOS(Const.minimumTargetVersion),
+      sources: ["Targets/Scene/Sources/**"],
+      resources: ["Targets/Scene/Resources/**"],
+      dependencies: [
+        .external(name: "SnapKit", condition: .when(.all)),
+        .external(name: "Then", condition: .when(.all))
+      ]
+    ),
+    .target(
+        name: "{{ name }}SceneTests",
+        destinations: .iOS,
+        product: .unitTests,
+        bundleId: Const.appFeatureBundleId + ".{{ name }}SceneTests",
+        deploymentTargets: .iOS(Const.minimumTargetVersion),
+        infoPlist: .default,
+        sources: ["Targets/Scene/Tests/**"],
+        dependencies: [.target(name: "{{ name }}Scene")]
+    ),
+  ]
+)
