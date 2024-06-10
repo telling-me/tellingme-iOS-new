@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  TellingMe-iOS
+//  TellingMe-DesignSystem-iOS
 //
 //  Created by Woody Lee on 6/4/24.
 //  Copyright © 2024 tellingUs. All rights reserved.
@@ -18,12 +18,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-
         // Configure window
         let window = UIWindow()
         self.window = window
 
         // Set root
+        let viewController = IconViewController()
+        window.rootViewController = viewController
 
         // Present Window
         window.makeKeyAndVisible()

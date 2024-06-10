@@ -1,6 +1,6 @@
 //
 //  main.swift
-//  TellingMe-iOS
+//  TellingMe-DesignSystem-iOS
 //
 //  Created by Woody Lee on 6/4/24.
 //  Copyright © 2024 tellingUs. All rights reserved.

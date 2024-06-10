@@ -8,7 +8,7 @@
 
 import UIKit
 
-public struct Icon {
+public struct Icon: Hashable {
     let name: String
 }
 

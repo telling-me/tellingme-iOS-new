@@ -22,7 +22,10 @@ let project = Project.make(
       product: .staticLibrary,
       bundleId: Const.sharedBundleId + ".UtilKit",
       deploymentTargets: .iOS(Const.minimumTargetVersion),
-      sources: ["Targets/UtilKit/**"]
+      sources: ["Targets/UtilKit/**"],
+      dependencies: [
+        .target(name: "Shared_ProtocolKit", condition: .when(.all)),
+      ]
     ),
     .target(
       name: "Shared_ProtocolKit",

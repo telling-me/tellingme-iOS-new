@@ -6,6 +6,7 @@ let workspace = Workspace(
         "Projects/App",
         "Projects/AppCore",
         "Projects/AppFeature/AppFeatureKit",
+        "Projects/DesignSystemApp",
         "Projects/Shared"
     ]
 )
