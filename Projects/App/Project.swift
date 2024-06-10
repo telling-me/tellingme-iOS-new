@@ -26,11 +26,22 @@ let project = Project.make(
       resources: [Const.resourceFilePath],
       dependencies: [
         .project(
-            target: "AppFeatureKit",
-            path: .relativeToRoot("Projects/AppFeature/AppFeatureKit"),
-            condition: .when(.all)
+          target: "AppFeatureKit",
+          path: .relativeToRoot("Projects/AppFeature/AppFeatureKit"),
+          condition: .when(.all)
         ),
         .external(name: "KakaoSDKCommon", condition: .when(.all))
+      ]
+    ),
+    .target(
+      name: "TellingMe-UIKit-App",
+      destinations: [.iPhone],
+      product: .app,
+      bundleId: Const.appBundleId + ".designsystem.app",
+      deploymentTargets: .iOS(Const.minimumTargetVersion),
+      sources: ["UIKitApp/**"],
+      dependencies: [
+        .project(target: "AppCoreKit", path: "../AppCore", condition: .when(.all))
       ]
     )
   ]

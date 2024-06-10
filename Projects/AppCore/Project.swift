@@ -48,7 +48,8 @@ let project = Project.make(
       product: .staticLibrary,
       bundleId: Const.appCoreBundleId + ".DesignSystem",
       deploymentTargets: .iOS(Const.minimumTargetVersion),
-      sources: ["DesignSystem/**"]
+      sources: ["DesignSystem/Sources/**"],
+      resources: ["DesignSystem/Resources/**"]
     ),
   ]
 )
