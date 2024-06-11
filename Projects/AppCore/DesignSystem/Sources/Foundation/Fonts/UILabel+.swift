@@ -11,12 +11,12 @@ import UIKit
 extension UILabel {
     public func setText(text: String?, style: Font.Style) {
         if let text = text {
-            let style = NSMutableParagraphStyle()
-            style.maximumLineHeight = fontStyle.lineHeight
-            style.minimumLineHeight = fontStyle.lineHeight
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.maximumLineHeight = style.lineHeight
+            paragraphStyle.minimumLineHeight = style.lineHeight
             
             let attributes: [NSAttributedString.Key: Any] = [
-                .paragraphStyle: style
+                .paragraphStyle: paragraphStyle
             ]
                 
             let attrString = NSAttributedString(string: text,
@@ -24,6 +24,6 @@ extension UILabel {
             self.attributedText = attrString
         }
         
-        self.font = .fontNanum(fontStyle)
+        self.font = .fontNanum(style)
     }
 }

@@ -9,32 +9,25 @@
 import UIKit
 
 public enum Font {
-    public enum Style: String {
-        case display
-        case head
-        case body
-        case caption
-    }
-    public enum Weight: String {
-        case bold = "B"
-        case regular = "R"
-    }
-    
-    public enum Size: CGFloat {
-        case 32
-        case 28
-        case 24
-        case 20
-        case 18
-        case 16
-        case 14
-        case 12
-        case 10
-    }
-
-    private var fontName: String { 
-        return "\(style.rawValue)_"\(size.rawValue)"_"(weight.rawValue)"
-    }
+    public enum Style {
+        case display_01_B
+        case display_01_R
+        case display_02_B
+        case display_02_R
+        case head_01_B
+        case head_01_R
+        case head_02_B
+        case head_02_R
+        case head_03_B
+        case head_03_R
+        case body_01_B
+        case body_01_R
+        case body_02_B
+        case body_02_R
+        case caption_01_B
+        case caption_01_R
+        case caption_02_B
+        case caption_02_R
         
         var font: AppCoreDesignSystemFontConvertible {
             switch self {
@@ -68,7 +61,7 @@ public enum Font {
             }
         }
         
-        var lineHeight: CGFloat {
+        public var lineHeight: CGFloat {
             return size.rawValue * 1.5
         }
         
