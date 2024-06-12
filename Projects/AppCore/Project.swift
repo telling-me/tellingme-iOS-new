@@ -50,6 +50,7 @@ let project = Project.make(
       deploymentTargets: .iOS(Const.minimumTargetVersion),
       sources: ["DesignSystem/Sources/**"],
       resources: ["DesignSystem/Resources/**"]
-    ),
-  ]
+    )
+  ],
+  resourceSynthesizers: .default
 )
