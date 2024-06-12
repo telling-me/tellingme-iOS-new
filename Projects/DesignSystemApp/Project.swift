@@ -5,32 +5,27 @@ let infoPlist: [String: Plist.Value] = [
   "CFBundleDevelopmentRegion": "ko_KR",
   "CFBundleShortVersionString": "1.0.0",
   "CFBundleVersion": "1",
-  "CFBundleDisplayName": "텔링미",
+  "CFBundleDisplayName": "텔링미 디자인시스템",
   "UIMainStoryboardFile": "",
   "UILaunchStoryboardName": "LaunchScreen",
-  "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
   "UISupportedInterfaceOrientations": ["UIInterfaceOrientationPortrait"]
 ]
 
 let project = Project.make(
-  name: "App",
+  name: "DesignSystemApp",
   targets: [
     .target(
-      name: "TellingMe-iOS",
+      name: "TellingMe-DesignSystem-App",
       destinations: [.iPhone],
       product: .app,
-      bundleId: Const.appBundleId,
+      bundleId: Const.appBundleId + ".designsystem.app",
       deploymentTargets: .iOS(Const.minimumTargetVersion),
       infoPlist: .extendingDefault(with: infoPlist),
-      sources: [Const.sourceFilePath],
-      resources: [Const.resourceFilePath],
+      sources: ["Sources/**"],
+      resources: ["Resources/**"],
       dependencies: [
-        .project(
-          target: "AppFeatureKit",
-          path: .relativeToRoot("Projects/AppFeature/AppFeatureKit"),
-          condition: .when(.all)
-        ),
-        .external(name: "KakaoSDKCommon", condition: .when(.all))
+        .project(target: "AppCoreKit", path: "../AppCore", condition: .when(.all)),
+        .project(target: "SharedKit", path: "../Shared", condition: .when(.all))
       ]
     )
   ]
