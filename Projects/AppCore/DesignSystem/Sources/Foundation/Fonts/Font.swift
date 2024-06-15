@@ -8,7 +8,11 @@
 
 import UIKit
 
-public enum Font {
+public enum Font { }
+
+// MARK: - Style
+
+extension Font {
     public enum Style {
         case display_01_B
         case display_01_R
@@ -69,7 +73,11 @@ public enum Font {
             return 0
         }
     }
-    
+}
+
+// MARK: - Size
+
+extension Font {
     enum Size: CGFloat {
         case _32 = 32
         case _28 = 28
@@ -80,5 +88,87 @@ public enum Font {
         case _14 = 14
         case _12 = 12
         case _10 = 10
+    }
+}
+
+// MARK: - Attributes
+
+extension Font {
+    public struct Attributes {
+        public var style: Style
+        public var textColor: UIColor?
+        public var textAlignment: NSTextAlignment
+        
+        public init(
+            style: Style,
+            textColor: UIColor? = nil,
+            textAlignment: NSTextAlignment = .natural
+        ) {
+            self.style = style
+            self.textColor = textColor
+            self.textAlignment = textAlignment
+        }
+    }
+}
+
+// MARK: - Builder
+
+extension Font {
+    public static func build(
+        string: String?,
+        attributes: Attributes
+    ) -> NSMutableAttributedString {
+        var attributedString: [NSAttributedString.Key: Any] = [:]
+        
+        // MARK: - Set up (Font)
+        
+        attributedString[.font] = UIFont.fontNanum(attributes.style)
+        
+        // MARK: - Set up (Line Height)
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.maximumLineHeight = attributes.style.lineHeight
+        paragraphStyle.minimumLineHeight = attributes.style.lineHeight
+        
+        attributedString[.paragraphStyle] = paragraphStyle
+        
+        // MARK: - Set up (Color)
+        
+        attributedString[.foregroundColor] = attributes.textColor
+        
+        return NSMutableAttributedString(
+            string: string ?? "",
+            attributes: attributedString
+        )
+    }
+}
+
+// MARK: - Builder (Convenient Builder)
+
+extension Font {
+    public static func build(
+        string: String?,
+        style: Style
+    ) -> NSMutableAttributedString {
+        return Font.build(
+            string: string,
+            attributes: .init(
+                style: style
+            )
+        )
+    }
+    
+    public static func build(
+        string: String?,
+        style: Style,
+        textColor: UIColor?
+    ) -> NSMutableAttributedString {
+        return Font.build(
+            string: string,
+            attributes: .init(
+                style: style,
+                textColor: textColor
+            )
+        )
     }
 }

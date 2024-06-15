@@ -1,5 +1,5 @@
 //
-//  UIFont+.swift
+//  UIFont+Name.swift
 //  AppCore_DesignSystem
 //
 //  Created by 마경미 on 11.06.24.
