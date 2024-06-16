@@ -35,7 +35,7 @@ public class BaseButton: UIButton {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
-        updateContentInsets()
+        setContentInsets()
     }
 }
 
@@ -160,32 +160,64 @@ extension BaseButton {
     }
 }
 
+// MARK: - Image
+
+extension BaseButton {
+    public func setIcon(
+        attributes: Icon.Attributes,
+        for state: UIControl.State
+    ) {
+        setImage(.icon(attributes: attributes), for: state)
+        updateContentInsets()
+    }
+
+    func setImage(
+        normal: UIImage?,
+        highlighted: UIImage?,
+        disabled: UIImage? = nil,
+        selected: UIImage? = nil
+    ) {
+        self.setImage(normal, for: .normal)
+        self.setImage(highlighted, for: .highlighted)
+        self.setImage(disabled, for: .disabled)
+        self.setImage(selected, for: .selected)
+    }
+}
+
 // MARK: - Content Insets
 
 extension BaseButton {
-    public func setNeedsToUpdateContentInsets() {
+    public func updateContentInsets() {
         needsToUpdateContentInsets = true
         setNeedsLayout()
     }
     
     public func setImageSpacing(_ spacing: CGFloat) {
         self.imageSpacing = spacing
-        setNeedsToUpdateContentInsets()
+        updateContentInsets()
     }
-    
+
+    public func setEdgeSpacing(_ spacing: CGFloat) {
+        self.topInset = spacing
+        self.bottomInset = spacing
+        self.leftInset = spacing
+        self.rightInset = spacing
+        updateContentInsets()
+    }
+
     public func setVerticalSpacing(_ spacing: CGFloat) {
         self.topInset = spacing
         self.bottomInset = spacing
-        setNeedsToUpdateContentInsets()
+        updateContentInsets()
     }
     
     public func setHorizontalSpacing(_ spacing: CGFloat) {
         self.leftInset = spacing
         self.rightInset = spacing
-        setNeedsToUpdateContentInsets()
+        updateContentInsets()
     }
     
-    private func updateContentInsets() {
+    private func setContentInsets() {
         guard needsToUpdateContentInsets else { return }
         
         needsToUpdateContentInsets = false

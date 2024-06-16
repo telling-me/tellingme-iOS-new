@@ -12,15 +12,18 @@ extension Icon {
     public struct Attributes {
         public let icon: Icon
         public let size: Size
+        public let color: UIColor?
         public let renderingMode: UIImage.RenderingMode
 
         public init(
             icon: Icon,
             size: Size,
+            color: UIColor?,
             renderingMode: UIImage.RenderingMode = .alwaysOriginal
         ) {
             self.icon = icon
             self.size = size
+            self.color = color
             self.renderingMode = renderingMode
         }
     }
