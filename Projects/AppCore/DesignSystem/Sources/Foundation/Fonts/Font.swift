@@ -122,7 +122,10 @@ extension Font {
         
         // MARK: - Set up (Font)
         
-        attributedString[.font] = UIFont.fontNanum(attributes.style)
+        let font = UIFont.fontNanum(attributes.style)
+       
+        attributedString[.font] = font
+        attributedString[.baselineOffset] = (attributes.style.lineHeight - font.lineHeight) / 2.0
         
         // MARK: - Set up (Line Height)
         
