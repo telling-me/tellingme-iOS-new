@@ -27,7 +27,7 @@ public final class Modal: UIViewController {
         description: String? = nil,
         primaryActionText: String,
         primaryActionHandler: @escaping () -> Void,
-        secondaryActioniText: String? = nil,
+        secondaryActionText: String? = nil,
         secondaryActionHandler: (() -> Void)? = nil
     ) {
         self.init(
@@ -36,7 +36,7 @@ public final class Modal: UIViewController {
                 description: description,
                 primaryActionText: primaryActionText,
                 primaryActionHandler: primaryActionHandler,
-                secondaryActioniText: secondaryActioniText,
+                secondaryActionText: secondaryActionText,
                 secondaryActionHandler: secondaryActionHandler
             )
         )
@@ -146,10 +146,10 @@ extension Modal {
     }
 
     private func setupSecondaryButton() {
-        guard let secondaryActioniText = attributes.secondaryActioniText else { return }
+        guard let secondaryActionText = attributes.secondaryActionText else { return }
 
         BoxButton(
-            text: secondaryActioniText,
+            text: secondaryActionText,
             attributes: .primaryLightLarge
         ).do {
             buttonStackView.addArrangedSubview($0)

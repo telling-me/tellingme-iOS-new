@@ -14,7 +14,7 @@ extension Modal {
         let description: String?
         let primaryActionText: String
         let primaryActionHandler: () -> Void
-        let secondaryActioniText: String?
+        let secondaryActionText: String?
         let secondaryActionHandler: (() -> Void)?
 
         public init(
@@ -22,14 +22,14 @@ extension Modal {
             description: String? = nil,
             primaryActionText: String,
             primaryActionHandler: @escaping () -> Void,
-            secondaryActioniText: String? = nil,
+            secondaryActionText: String? = nil,
             secondaryActionHandler: (() -> Void)? = nil
         ) {
             self.title = title
             self.description = description
             self.primaryActionText = primaryActionText
             self.primaryActionHandler = primaryActionHandler
-            self.secondaryActioniText = secondaryActioniText
+            self.secondaryActionText = secondaryActionText
             self.secondaryActionHandler = secondaryActionHandler
         }
     }
