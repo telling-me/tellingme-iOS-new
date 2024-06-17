@@ -35,6 +35,10 @@ public final class IconButton: BaseButton {
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    // MARK: - Animating Properties
+
+    override var highlightedScale: Double { 0.92 }
 }
 
 // MARK: - Configure

@@ -19,9 +19,16 @@ public class BaseButton: UIButton {
     private var imageSpacing: CGFloat = 0
     
     private var borderStateContainer: [UInt: UIColor?] = [:]
-    
+    private var rightIconStateContainer: [UInt: UIImage?]?
+
+    private var rightImageView: UIImageView?
+
     private var needsToUpdateContentInsets: Bool = true
     
+    var duration: Double { 0.3 }
+
+    var highlightedScale: Double { 0.96 }
+
     public init() {
         super.init(frame: .zero)
         
@@ -35,6 +42,7 @@ public class BaseButton: UIButton {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
+        layoutRightImageView()
         setContentInsets()
     }
 }
@@ -171,6 +179,18 @@ extension BaseButton {
         updateContentInsets()
     }
 
+    public func setRightIcon(
+        attributes: Icon.Attributes,
+        for state: UIControl.State
+    ) {
+        if rightIconStateContainer == nil {
+            rightIconStateContainer = [:]
+        }
+
+        rightIconStateContainer?[state.rawValue] = .icon(attributes: attributes)
+        updateRightImage()
+    }
+
     func setImage(
         normal: UIImage?,
         highlighted: UIImage?,
@@ -181,6 +201,76 @@ extension BaseButton {
         self.setImage(highlighted, for: .highlighted)
         self.setImage(disabled, for: .disabled)
         self.setImage(selected, for: .selected)
+    }
+
+    func setRightImage(
+        normal: UIImage?,
+        highlighted: UIImage?,
+        disabled: UIImage? = nil,
+        selected: UIImage? = nil
+    ) {
+        self.rightIconStateContainer = [:]
+
+        rightIconStateContainer?[UIButton.State.normal.rawValue] = normal
+        rightIconStateContainer?[UIButton.State.highlighted.rawValue] = highlighted
+        rightIconStateContainer?[UIButton.State.disabled.rawValue] = disabled
+        rightIconStateContainer?[UIButton.State.selected.rawValue] = selected
+
+        updateRightImage()
+    }
+
+    private func updateRightImage() {
+        guard let rightImage = rightIconStateContainer?[self.state.rawValue] else { return }
+        
+        let rightImageView = self.rightImageView ?? makeRightImageView()
+
+        rightImageView.image = rightImage
+        rightImageView.isHidden = rightImage == nil
+
+        updateContentInsets()
+    }
+
+    private func makeRightImageView() -> UIImageView {
+        let rightImageView = UIImageView()
+
+        addSubview(rightImageView)
+        self.rightImageView = rightImageView
+
+        return rightImageView
+    }
+
+    private func layoutRightImageView() {
+        guard let rightImageView else { return }
+
+        rightImageView.sizeToFit()
+
+        let xPosition: CGFloat
+        let yPosition: CGFloat
+        if let titleLabel, isShown(targetView: titleLabel) {
+            xPosition = titleLabel.frame.maxX + imageSpacing
+            yPosition = titleLabel.frame.midY - rightImageView.frame.height / 2
+        } else if let imageView, isShown(targetView: imageView) {
+            xPosition = imageView.frame.maxX + imageSpacing
+            yPosition = imageView.frame.midY - rightImageView.frame.height / 2
+        } else {
+            xPosition = leftInset
+            yPosition = topInset
+        }
+
+        rightImageView.frame.origin = CGPoint(x: xPosition, y: yPosition)
+    }
+
+    private func additionalRightImageContentInsets() -> CGFloat {
+        guard let rightImageView,
+              rightImageView.isHidden == false
+        else { return .zero }
+
+        return rightImageView.frame.width + imageSpacing
+    }
+
+    private func isShown(targetView: UIView?) -> Bool {
+        guard let targetView else { return false }
+        return targetView.isHidden == false
     }
 }
 
@@ -249,7 +339,7 @@ extension BaseButton {
             top: topInset,
             left: leftInset + leftSpacingInset,
             bottom: bottomInset,
-            right: rightInset + leftSpacingInset
+            right: rightInset + leftSpacingInset + additionalRightImageContentInsets()
         )
     }
 }
@@ -257,10 +347,7 @@ extension BaseButton {
 // MARK: - Animation
 
 extension BaseButton {
-    private var duration: Double { 0.3 }
-
     private func animatingScaleDown(direction: Bool) {
-        let highlightedScale: Double = 0.96
         let transform = direction ?
         CGAffineTransform(scaleX: highlightedScale, y: highlightedScale)
         : .identity
