@@ -88,7 +88,7 @@ extension IconViewController {
             self.stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
             for size in Icon.Size.all {
-                let image = UIImage.icon(icon: icon, size: size)
+                let image = UIImage.icon(icon: icon, size: size, color: nil)
                 let imageView = UIImageView(image: image)
                 imageView.layer.borderColor = UIColor.black.cgColor
                 imageView.layer.borderWidth = 0.5
