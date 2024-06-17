@@ -15,6 +15,10 @@ extension UIImage {
         guard var image = UIImage(named: assetName, in: .module, with: nil)
         else { fatalError("❌ \(assetName) not exist") }
 
+        if let color = attributes.color {
+            image = image.withTintColor(color)
+        }
+
         image = image.withRenderingMode(attributes.renderingMode)
 
         return image
@@ -23,16 +27,16 @@ extension UIImage {
     public static func icon(
         icon: Icon,
         size: Icon.Size,
+        color: UIColor?,
         renderingMode: UIImage.RenderingMode = .alwaysOriginal
     ) -> UIImage {
-        let attributes = Icon.Attributes(icon: icon, size: size, renderingMode: renderingMode)
-        let assetName = attributes.assetName
-
-        guard var image = UIImage(named: assetName, in: .module, with: nil)
-        else { fatalError("❌ \(assetName) not exist") }
-
-        image = image.withRenderingMode(renderingMode)
-
-        return image
+        self.icon(
+            attributes: .init(
+                icon: icon,
+                size: size,
+                color: color,
+                renderingMode: renderingMode
+            )
+        )
     }
 }
