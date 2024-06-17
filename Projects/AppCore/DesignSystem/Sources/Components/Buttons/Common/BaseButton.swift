@@ -295,6 +295,16 @@ extension BaseButton {
         updateContentInsets()
     }
 
+    public func setLeftSpacing(_ spacing: CGFloat) {
+        self.leftInset = spacing
+        updateContentInsets()
+    }
+
+    public func setRightSpacing(_ spacing: CGFloat) {
+        self.rightInset = spacing
+        updateContentInsets()
+    }
+
     public func setVerticalSpacing(_ spacing: CGFloat) {
         self.topInset = spacing
         self.bottomInset = spacing

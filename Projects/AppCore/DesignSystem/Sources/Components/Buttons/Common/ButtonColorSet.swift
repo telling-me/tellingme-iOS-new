@@ -98,4 +98,40 @@ extension ButtonColorSet {
         backgroundColor: .clear,
         borderColor: nil
     )
+
+    static let chipNormal: Self = .init(
+        textColor: .gray600,
+        backgroundColor: .clear,
+        borderColor: .gray400
+    )
+
+    static let chipHighlighted: Self = .init(
+        textColor: .gray600,
+        backgroundColor: .clear,
+        borderColor: .gray600
+    )
+
+    static let chipDisabled: Self = .init(
+        textColor: .gray300,
+        backgroundColor: .clear,
+        borderColor: .gray200
+    )
+
+    static let chipFilledNormal: Self = .init(
+        textColor: .gray600,
+        backgroundColor: .background200,
+        borderColor: nil
+    )
+
+    static let chipFilledHighlighted: Self = .init(
+        textColor: .gray600,
+        backgroundColor: .background200,
+        borderColor: nil
+    )
+
+    static let chipFilledDisabled: Self = .init(
+        textColor: .gray300,
+        backgroundColor: .background200,
+        borderColor: nil
+    )
 }
