@@ -31,6 +31,6 @@ final class ToastViewController: UIViewController {
     }
     
     @objc func showToast() {
-        ToastManager.shared.showToast(message: "안녕하세용", icon: .checkmark)
+        ToastPresenter.shared.showToast(message: "안녕하세용", icon: .checkmark)
     }
 }

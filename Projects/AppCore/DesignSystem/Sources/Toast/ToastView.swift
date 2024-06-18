@@ -6,10 +6,9 @@
 //  Copyright © 2024 tellingUs. All rights reserved.
 //
 
-import UIKit
-
-import Then
 import SnapKit
+import Then
+import UIKit
 
 final public class ToastView: UIView {
     private let iconView: UIImageView = UIImageView()

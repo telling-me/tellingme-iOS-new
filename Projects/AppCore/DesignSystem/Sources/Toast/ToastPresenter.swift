@@ -12,8 +12,8 @@ private enum ToastError: Error {
     case keyWindowNotFound
 }
 
-final public class ToastManager {
-    public static let shared = ToastManager()
+final public class ToastPresenter {
+    public static let shared = ToastPresenter()
     
     private var activeToasts: NSMutableArray = []
     private var queue: NSMutableArray = []
