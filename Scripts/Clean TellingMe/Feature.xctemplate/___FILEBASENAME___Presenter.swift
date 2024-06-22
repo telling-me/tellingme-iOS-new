@@ -13,8 +13,11 @@ import SharedKit
 protocol ___VARIABLE_sceneName___PresentationLogic {}
 
 final class ___VARIABLE_sceneName___Presenter {
-    weak var viewController: ___VARIABLE_sceneName___DisplayLogic?
-    
+    private weak var viewController: (any ___VARIABLE_sceneName___DisplayLogic)?
+
+    init(viewController: (any ___VARIABLE_sceneName___DisplayLogic)) {
+        self.viewController = viewController
+    }
 }
 
 // MARK: - Presentation Logic
