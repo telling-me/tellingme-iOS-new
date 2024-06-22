@@ -8,7 +8,8 @@
 
 import UIKit
 
-import RootScene
+import AppCore_DesignSystem
+import LoginScene
 
 final class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -24,6 +25,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = window
 
         // Set root
+        // MARK: - RootScene이 개발되기 전까지 진입점 수정해가면서 테스트
+        let viewController = LoginSceneBuilder().make(with: .init()).viewController
+       
+        let navigationController = UINavigationController(rootViewController: viewController)
+        window.rootViewController = navigationController
 
         // Present Window
         window.makeKeyAndVisible()
