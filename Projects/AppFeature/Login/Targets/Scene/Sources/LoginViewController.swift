@@ -34,7 +34,19 @@ final class LoginViewController: UIViewController {
 
 extension LoginViewController {
     private func setUI() {
-        
+        // TODO: - 로그인 UI 그리기
+        BoxButton(text: "회원가입 플로우", attributes: .primaryLarge)
+            .do {
+                view.addSubview($0)
+                $0.snp.makeConstraints { make in
+                    make.center.equalToSuperview()
+                }
+
+                $0.setTapHandler { [weak self] in
+                    guard let self else { return }
+                    
+                }
+            }
     }
 }
 
