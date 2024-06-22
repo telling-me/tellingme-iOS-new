@@ -19,13 +19,16 @@ protocol ProfileEditBirthGenderDataStore: AnyObject {}
 final class ProfileEditBirthGenderInteractor: ProfileEditBirthGenderBusinessLogic, ProfileEditBirthGenderDataStore {
     private let presenter: ProfileEditBirthGenderPresentationLogic
     private let worker: ProfileEditBirthGenderWorkerProtocol
-    
+    private let externalDataStore: ProfileEditDataStore
+
     init(
         presenter: any ProfileEditBirthGenderPresentationLogic,
-        worker: any ProfileEditBirthGenderWorkerProtocol
+        worker: any ProfileEditBirthGenderWorkerProtocol,
+        externalDataStore: ProfileEditDataStore
     ) {
         self.presenter = presenter
         self.worker = worker
+        self.externalDataStore = externalDataStore
     }
     
     // MARK: - DataStore

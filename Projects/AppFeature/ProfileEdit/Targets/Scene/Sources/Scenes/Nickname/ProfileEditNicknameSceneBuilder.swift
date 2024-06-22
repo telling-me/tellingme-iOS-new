@@ -21,10 +21,13 @@ public struct ProfileEditNicknameConfiguration {
     
 }
 
-public final class ProfileEditNicknameScenBuilder {
-    
-    public init() {}
-    
+final class ProfileEditNicknameScenBuilder {
+    private let externalDataStore: ProfileEditDataStore
+
+    public init(externalDataStore: ProfileEditDataStore) {
+        self.externalDataStore = externalDataStore
+    }
+
     public func make(with configuration: ProfileEditNicknameConfiguration) -> ProfileEditNicknameScene {
         let viewController = ProfileEditNicknameViewController()
         let worker = ProfileEditNicknameWorker()
@@ -33,7 +36,8 @@ public final class ProfileEditNicknameScenBuilder {
         )
         let interactor = ProfileEditNicknameInteractor(
             presenter: presenter,
-            worker: worker
+            worker: worker,
+            externalDataStore: externalDataStore
         )
         let router = ProfileEditNicknameRouter(
             viewController: viewController,

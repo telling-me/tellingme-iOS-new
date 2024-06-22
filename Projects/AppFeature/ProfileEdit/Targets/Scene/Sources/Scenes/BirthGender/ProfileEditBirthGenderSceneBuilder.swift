@@ -22,9 +22,12 @@ public struct ProfileEditBirthGenderConfiguration {
 }
 
 public final class ProfileEditBirthGenderScenBuilder {
-    
-    public init() {}
-    
+    private let externalDataStore: ProfileEditDataStore
+
+    public init(externalDataStore: ProfileEditDataStore) {
+        self.externalDataStore = externalDataStore
+    }
+
     public func make(with configuration: ProfileEditBirthGenderConfiguration) -> ProfileEditBirthGenderScene {
         let viewController = ProfileEditBirthGenderViewController()
         let worker = ProfileEditBirthGenderWorker()
@@ -33,7 +36,8 @@ public final class ProfileEditBirthGenderScenBuilder {
         )
         let interactor = ProfileEditBirthGenderInteractor(
             presenter: presenter,
-            worker: worker
+            worker: worker,
+            externalDataStore: externalDataStore
         )
         let router = ProfileEditBirthGenderRouter(
             viewController: viewController,

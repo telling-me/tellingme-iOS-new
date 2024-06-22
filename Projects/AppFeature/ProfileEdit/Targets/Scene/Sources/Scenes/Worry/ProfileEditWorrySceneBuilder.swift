@@ -22,8 +22,11 @@ public struct ProfileEditWorryConfiguration {
 }
 
 public final class ProfileEditWorryScenBuilder {
-    
-    public init() {}
+    private let externalDataStore: ProfileEditDataStore
+
+    public init(externalDataStore: ProfileEditDataStore) {
+        self.externalDataStore = externalDataStore
+    }
     
     public func make(with configuration: ProfileEditWorryConfiguration) -> ProfileEditWorryScene {
         let viewController = ProfileEditWorryViewController()
@@ -33,7 +36,8 @@ public final class ProfileEditWorryScenBuilder {
         )
         let interactor = ProfileEditWorryInteractor(
             presenter: presenter,
-            worker: worker
+            worker: worker,
+            externalDataStore: externalDataStore
         )
         let router = ProfileEditWorryRouter(
             viewController: viewController,

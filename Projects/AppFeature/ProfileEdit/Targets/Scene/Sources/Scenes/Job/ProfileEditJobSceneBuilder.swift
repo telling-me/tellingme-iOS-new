@@ -22,9 +22,12 @@ public struct ProfileEditJobConfiguration {
 }
 
 public final class ProfileEditJobScenBuilder {
-    
-    public init() {}
-    
+    private let externalDataStore: ProfileEditDataStore
+
+    public init(externalDataStore: ProfileEditDataStore) {
+        self.externalDataStore = externalDataStore
+    }
+
     public func make(with configuration: ProfileEditJobConfiguration) -> ProfileEditJobScene {
         let viewController = ProfileEditJobViewController()
         let worker = ProfileEditJobWorker()
@@ -33,7 +36,8 @@ public final class ProfileEditJobScenBuilder {
         )
         let interactor = ProfileEditJobInteractor(
             presenter: presenter,
-            worker: worker
+            worker: worker,
+            externalDataStore: externalDataStore
         )
         let router = ProfileEditJobRouter(
             viewController: viewController,

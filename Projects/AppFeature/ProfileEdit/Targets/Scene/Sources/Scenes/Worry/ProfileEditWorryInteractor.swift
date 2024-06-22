@@ -19,13 +19,16 @@ protocol ProfileEditWorryDataStore: AnyObject {}
 final class ProfileEditWorryInteractor: ProfileEditWorryBusinessLogic, ProfileEditWorryDataStore {
     private let presenter: ProfileEditWorryPresentationLogic
     private let worker: ProfileEditWorryWorkerProtocol
-    
+    private let externalDataStore: ProfileEditDataStore
+
     init(
         presenter: any ProfileEditWorryPresentationLogic,
-        worker: any ProfileEditWorryWorkerProtocol
+        worker: any ProfileEditWorryWorkerProtocol,
+        externalDataStore: ProfileEditDataStore
     ) {
         self.presenter = presenter
         self.worker = worker
+        self.externalDataStore = externalDataStore
     }
     
     // MARK: - DataStore

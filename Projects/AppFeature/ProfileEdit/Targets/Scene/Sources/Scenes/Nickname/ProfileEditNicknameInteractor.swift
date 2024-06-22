@@ -19,13 +19,16 @@ protocol ProfileEditNicknameDataStore: AnyObject {}
 final class ProfileEditNicknameInteractor: ProfileEditNicknameBusinessLogic, ProfileEditNicknameDataStore {
     private let presenter: ProfileEditNicknamePresentationLogic
     private let worker: ProfileEditNicknameWorkerProtocol
-    
+    private let externalDataStore: ProfileEditDataStore
+
     init(
         presenter: any ProfileEditNicknamePresentationLogic,
-        worker: any ProfileEditNicknameWorkerProtocol
+        worker: any ProfileEditNicknameWorkerProtocol,
+        externalDataStore: ProfileEditDataStore
     ) {
         self.presenter = presenter
         self.worker = worker
+        self.externalDataStore = externalDataStore
     }
     
     // MARK: - DataStore
