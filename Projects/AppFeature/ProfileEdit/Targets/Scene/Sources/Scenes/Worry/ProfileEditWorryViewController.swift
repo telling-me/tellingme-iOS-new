@@ -14,11 +14,14 @@ import UIKit
 import AppCore_DesignSystem
 import SharedKit
 
+protocol ProfileEditWorrySceneCoordinator: ProfileEditSceneCoordinator {}
+
 protocol ProfileEditWorryDisplayLogic: AnyObject {}
 
 final class ProfileEditWorryViewController: UIViewController {
     var interactor: (any ProfileEditWorryBusinessLogic)?
     var router: (any ProfileEditWorryRoutingLogic)?
+    var coordinator: (any ProfileEditWorrySceneCoordinator)?
 
     // MARK: - UI
     
@@ -36,13 +39,29 @@ extension ProfileEditWorryViewController {
     private func setUI() {
         view.backgroundColor = .white
 
-        UILabel().do {
-            $0.setText(text: "고민 화면", style: .body_01_B)
-            view.addSubview($0)
-            $0.snp.makeConstraints { make in
-                make.center.equalToSuperview()
+        UILabel()
+            .do {
+                $0.setText(text: "고민 화면", style: .body_01_B)
+                view.addSubview($0)
+                $0.snp.makeConstraints { make in
+                    make.center.equalToSuperview()
+                }
             }
-        }
+
+        BoxButton(text: "완료", attributes: .primaryLarge)
+            .do {
+                view.addSubview($0)
+                $0.snp.makeConstraints { make in
+                    make.centerX.equalToSuperview()
+                    make.centerY.equalToSuperview().offset(100)
+                }
+
+                $0.setTapHandler { [weak self] in
+                    guard let self else { return }
+
+                    self.coordinator?.next()
+                }
+            }
     }
 }
 

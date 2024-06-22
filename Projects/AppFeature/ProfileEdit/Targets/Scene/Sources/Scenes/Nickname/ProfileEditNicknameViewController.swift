@@ -14,11 +14,14 @@ import UIKit
 import AppCore_DesignSystem
 import SharedKit
 
+protocol ProfileEditNicknameSceneCoordinator: ProfileEditSceneCoordinator {}
+
 protocol ProfileEditNicknameDisplayLogic: AnyObject {}
 
 final class ProfileEditNicknameViewController: UIViewController {
     var interactor: (any ProfileEditNicknameBusinessLogic)?
     var router: (any ProfileEditNicknameRoutingLogic)?
+    var coordinator: (any ProfileEditNicknameSceneCoordinator)?
 
     // MARK: - UI
     
@@ -36,13 +39,29 @@ extension ProfileEditNicknameViewController {
     private func setUI() {
         view.backgroundColor = .white
 
-        UILabel().do {
-            $0.setText(text: "닉네임 화면", style: .body_01_B)
-            view.addSubview($0)
-            $0.snp.makeConstraints { make in
-                make.center.equalToSuperview()
+        UILabel()
+            .do {
+                $0.setText(text: "닉네임 화면", style: .body_01_B)
+                view.addSubview($0)
+                $0.snp.makeConstraints { make in
+                    make.center.equalToSuperview()
+                }
             }
-        }
+
+        BoxButton(text: "다음", attributes: .primaryLarge)
+            .do {
+                view.addSubview($0)
+                $0.snp.makeConstraints { make in
+                    make.centerX.equalToSuperview()
+                    make.centerY.equalToSuperview().offset(100)
+                }
+
+                $0.setTapHandler { [weak self] in
+                    guard let self else { return }
+
+                    self.coordinator?.next()
+                }
+            }
     }
 }
 
@@ -55,5 +74,5 @@ extension ProfileEditNicknameViewController: ProfileEditNicknameDisplayLogic {
 // MARK: - Scene
 
 extension ProfileEditNicknameViewController: ProfileEditNicknameScene {
-    
+
 }

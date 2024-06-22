@@ -12,13 +12,21 @@ import SharedKit
 
 @MainActor
 public protocol ProfileEditNicknameScene: AnyObject, Scene {
-    
+
+}
+
+protocol ProfileEditNicknameSceneCoordinatorProvider {
+    func coordinator(viewController: UIViewController) -> ProfileEditNicknameSceneCoordinator
 }
 
 public struct ProfileEditNicknameConfiguration {
-    
-    public init() {}
-    
+    let coordinatorProvider: ProfileEditNicknameSceneCoordinatorProvider
+
+    init(
+        coordinatorProvider: ProfileEditNicknameSceneCoordinatorProvider
+    ) {
+        self.coordinatorProvider = coordinatorProvider
+    }
 }
 
 final class ProfileEditNicknameScenBuilder {
@@ -46,7 +54,10 @@ final class ProfileEditNicknameScenBuilder {
         
         viewController.interactor = interactor
         viewController.router = router
-        
+        viewController.coordinator = configuration
+            .coordinatorProvider
+            .coordinator(viewController: viewController)
+
         return viewController
     }
 }

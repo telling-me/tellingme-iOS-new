@@ -21,7 +21,7 @@ public final class ProfileEditSceneBuilder {
     lazy var jobSceneBuilder = ProfileEditJobScenBuilder(externalDataStore: dataStore)
     lazy var worrySceneBuilder = ProfileEditWorryScenBuilder(externalDataStore: dataStore)
 
-    private let navigationController: UINavigationController
+    let navigationController: UINavigationController
 
     public init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -32,7 +32,7 @@ extension ProfileEditSceneBuilder {
     public func showProfileEditScene(
         from viewController: UIViewController
     ) {
-        let nicknameScene = nicknameSceneBuilder.make(with: .init()).viewController
+        let startViewController = nicknameViewController()
 
         // Note: Set up navigation (로그인에서 설정된다면 제거 필요)
         let barAppearance = UINavigationBarAppearance().then {
@@ -45,6 +45,44 @@ extension ProfileEditSceneBuilder {
             $0.modalPresentationStyle = .fullScreen
         }
 
-        navigationController.pushViewController(nicknameScene, animated: true)
+        navigationController.pushViewController(
+            startViewController,
+            animated: true
+        )
+    }
+}
+
+extension ProfileEditSceneBuilder {
+    func nicknameViewController() -> UIViewController {
+        nicknameSceneBuilder
+            .make(with: .init(
+                coordinatorProvider: ProfileEditCoordinator.Nickname.Provider(sceneBuilder: self)
+            ))
+            .viewController
+    }
+
+    func birthGenderViewController() -> UIViewController {
+        let provider = ProfileEditCoordinator.BirthGender.Provider(sceneBuilder: self)
+
+        return birthGenderSceneBuilder
+            .make(with: .init(coordinatorProvider: provider))
+            .viewController
+
+    }
+
+    func jobViewController() -> UIViewController { 
+        let provider = ProfileEditCoordinator.Job.Provider(sceneBuilder: self)
+
+        return jobSceneBuilder
+            .make(with: .init(coordinatorProvider: provider))
+            .viewController
+    }
+
+    func worryViewController() -> UIViewController { 
+        let provider = ProfileEditCoordinator.Worry.Provider(sceneBuilder: self)
+
+        return worrySceneBuilder
+            .make(with: .init(coordinatorProvider: provider))
+            .viewController
     }
 }

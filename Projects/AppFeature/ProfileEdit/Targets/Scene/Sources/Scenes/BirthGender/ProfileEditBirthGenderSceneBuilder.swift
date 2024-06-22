@@ -15,10 +15,18 @@ public protocol ProfileEditBirthGenderScene: AnyObject, Scene {
     
 }
 
+protocol ProfileEditBirthGenderSceneCoordinatorProvider {
+    func coordinator(viewController: UIViewController) -> ProfileEditBirthGenderSceneCoordinator
+}
+
 public struct ProfileEditBirthGenderConfiguration {
-    
-    public init() {}
-    
+    let coordinatorProvider: ProfileEditBirthGenderSceneCoordinatorProvider
+
+    init(
+        coordinatorProvider: ProfileEditBirthGenderSceneCoordinatorProvider
+    ) {
+        self.coordinatorProvider = coordinatorProvider
+    }
 }
 
 public final class ProfileEditBirthGenderScenBuilder {
@@ -46,7 +54,10 @@ public final class ProfileEditBirthGenderScenBuilder {
         
         viewController.interactor = interactor
         viewController.router = router
-        
+        viewController.coordinator = configuration
+            .coordinatorProvider
+            .coordinator(viewController: viewController)
+
         return viewController
     }
 }

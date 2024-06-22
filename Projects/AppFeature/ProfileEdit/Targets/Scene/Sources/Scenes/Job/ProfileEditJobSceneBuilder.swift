@@ -15,10 +15,18 @@ public protocol ProfileEditJobScene: AnyObject, Scene {
     
 }
 
+protocol ProfileEditJobSceneCoordinatorProvider {
+    func coordinator(viewController: UIViewController) -> ProfileEditJobSceneCoordinator
+}
+
 public struct ProfileEditJobConfiguration {
-    
-    public init() {}
-    
+    let coordinatorProvider: ProfileEditJobSceneCoordinatorProvider
+
+    init(
+        coordinatorProvider: ProfileEditJobSceneCoordinatorProvider
+    ) {
+        self.coordinatorProvider = coordinatorProvider
+    }
 }
 
 public final class ProfileEditJobScenBuilder {
@@ -46,7 +54,10 @@ public final class ProfileEditJobScenBuilder {
         
         viewController.interactor = interactor
         viewController.router = router
-        
+        viewController.coordinator = configuration
+            .coordinatorProvider
+            .coordinator(viewController: viewController)
+
         return viewController
     }
 }

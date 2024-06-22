@@ -15,10 +15,18 @@ public protocol ProfileEditWorryScene: AnyObject, Scene {
     
 }
 
+protocol ProfileEditWorrySceneCoordinatorProvider {
+    func coordinator(viewController: UIViewController) -> ProfileEditWorrySceneCoordinator
+}
+
 public struct ProfileEditWorryConfiguration {
-    
-    public init() {}
-    
+    let coordinatorProvider: ProfileEditWorrySceneCoordinatorProvider
+
+    init(
+        coordinatorProvider: ProfileEditWorrySceneCoordinatorProvider
+    ) {
+        self.coordinatorProvider = coordinatorProvider
+    }
 }
 
 public final class ProfileEditWorryScenBuilder {
@@ -46,7 +54,10 @@ public final class ProfileEditWorryScenBuilder {
         
         viewController.interactor = interactor
         viewController.router = router
-        
+        viewController.coordinator = configuration
+            .coordinatorProvider
+            .coordinator(viewController: viewController)
+
         return viewController
     }
 }
