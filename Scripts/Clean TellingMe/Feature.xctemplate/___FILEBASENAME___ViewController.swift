@@ -17,21 +17,9 @@ import SharedKit
 protocol ___VARIABLE_sceneName___DisplayLogic: AnyObject {}
 
 final class ___VARIABLE_sceneName___ViewController: UIViewController {
-    var interactor: any ___VARIABLE_sceneName___BusinessLogic
-    var router: any ___VARIABLE_sceneName___RoutingLogic
-    init(
-        interactor: any ___VARIABLE_sceneName___BusinessLogic,
-        router: any ___VARIABLE_sceneName___RoutingLogic
-    ) {
-        self.interactor = interactor
-        self.router = router
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+    var interactor: (any ___VARIABLE_sceneName___BusinessLogic)?
+    var router: (any ___VARIABLE_sceneName___RoutingLogic)?
+
     // MARK: - UI
     
     // MARK: - View Lifecycle

@@ -26,21 +26,22 @@ public final class ___VARIABLE_sceneName___ScenBuilder {
     public init() {}
     
     public func make(with configuration: ___VARIABLE_sceneName___Configuration) -> ___VARIABLE_sceneName___Scene {
-        
-        let presenter = ___VARIABLE_sceneName___Presenter()
-        let router = ___VARIABLE_sceneName___Router()
+        let viewController = ___VARIABLE_sceneName___ViewController()
         let worker = ___VARIABLE_sceneName___Worker()
+        let presenter = ___VARIABLE_sceneName___Presenter(
+            viewController: viewController
+        )
         let interactor = ___VARIABLE_sceneName___Interactor(
             presenter: presenter,
             worker: worker
         )
-        let viewController = ___VARIABLE_sceneName___ViewController(
-            interactor: interactor,
-            router: router
+        let router = ___VARIABLE_sceneName___Router(
+            viewController: viewController,
+            dataStore: interactor
         )
-        presenter.viewController = viewController
-        router.viewController = viewController
-        router.dataStore = interactor
+        
+        viewController.interactor = interactor
+        viewController.router = router
         
         return viewController
     }
