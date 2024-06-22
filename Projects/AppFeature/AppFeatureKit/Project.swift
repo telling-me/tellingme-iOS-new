@@ -12,7 +12,8 @@ let project = Project.make(
       deploymentTargets: .iOS(Const.minimumTargetVersion),
       sources: ["Sources/**"],
       dependencies: [
-        .project(target: "RootScene", path: "../Root", condition: .when(.all))
+        .project(target: "RootScene", path: "../Root", condition: .when(.all)),
+        .project(target: "LoginScene", path: "../Login", condition: .when(.all))
       ]
     ),
   ]
