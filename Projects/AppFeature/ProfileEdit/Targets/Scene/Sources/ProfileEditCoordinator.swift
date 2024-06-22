@@ -26,28 +26,12 @@ extension ProfileEditSceneCoordinator {
     }
 }
 
-extension ProfileEditCoordinator {
-    enum BarItem {
-        case back
-    }
-}
-
 extension ProfileEditSceneCoordinator {
-    func setNavigationLeftBarItem(
-        barItem: ProfileEditCoordinator.BarItem,
-        selector: Selector
-    ) {
-        let image: UIImage
-
-        switch barItem {
-        case .back:
-            image = ProfileEditCoordinator.Const.backIcon
-        }
-
-        navigationController
+    func setNavigationLeftBarItem(selector: Selector) {
+        viewController?
             .navigationItem
-            .leftBarButtonItem = UIBarButtonItem.init(
-                image: image,
+            .backBarButtonItem = .init(
+                title: .init(),
                 style: .plain,
                 target: self,
                 action: selector
@@ -101,7 +85,7 @@ extension ProfileEditCoordinator.Nickname: ProfileEditSceneCoordinator {
     }
 
     func setNavigationItems() {
-        setNavigationLeftBarItem(barItem: .back, selector: #selector(back))
+        setNavigationLeftBarItem(selector: #selector(back))
     }
 }
 
@@ -144,7 +128,7 @@ extension ProfileEditCoordinator.BirthGender: ProfileEditSceneCoordinator {
     }
 
     func setNavigationItems() {
-        setNavigationLeftBarItem(barItem: .back, selector: #selector(back))
+        setNavigationLeftBarItem(selector: #selector(back))
     }
 }
 
@@ -187,7 +171,7 @@ extension ProfileEditCoordinator.Job: ProfileEditSceneCoordinator {
     }
 
     func setNavigationItems() {
-        setNavigationLeftBarItem(barItem: .back, selector: #selector(back))
+        setNavigationLeftBarItem(selector: #selector(back))
     }
 }
 
@@ -230,7 +214,7 @@ extension ProfileEditCoordinator.Worry {
     }
 
     func setNavigationItems() {
-        setNavigationLeftBarItem(barItem: .back, selector: #selector(back))
+        setNavigationLeftBarItem(selector: #selector(back))
     }
 }
 
@@ -250,13 +234,3 @@ extension ProfileEditCoordinator.Worry {
         }
     }
 }
-
-// MARK: - Const
-
-private extension ProfileEditCoordinator {
-    enum Const {
-        static let backIcon: UIImage = .icon(icon: .caretLeft, size: .p24, color: .gray500)
-    }
-}
-
-

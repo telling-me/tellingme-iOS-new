@@ -29,6 +29,7 @@ final class ProfileEditWorryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.coordinator?.setNavigationItems()
         self.setUI()
     }
 }

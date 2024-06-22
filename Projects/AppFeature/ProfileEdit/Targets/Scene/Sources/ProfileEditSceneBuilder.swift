@@ -11,6 +11,7 @@ import SnapKit
 import Then
 import UIKit
 
+import AppCore_DesignSystem
 import SharedKit
 
 public final class ProfileEditSceneBuilder {
@@ -20,6 +21,14 @@ public final class ProfileEditSceneBuilder {
     lazy var birthGenderSceneBuilder = ProfileEditBirthGenderScenBuilder(externalDataStore: dataStore)
     lazy var jobSceneBuilder = ProfileEditJobScenBuilder(externalDataStore: dataStore)
     lazy var worrySceneBuilder = ProfileEditWorryScenBuilder(externalDataStore: dataStore)
+
+    // TODO: - 내비게이션 로직 추가 변경시 제거 필요 (DesignSystem import 제거)
+    lazy var backBarButtonItemWithNoTitle = UIBarButtonItem(
+        title: .init(),
+        style: .plain,
+        target: self,
+        action: nil
+    )
 
     let navigationController: UINavigationController
 
@@ -35,15 +44,7 @@ extension ProfileEditSceneBuilder {
         let startViewController = nicknameViewController()
 
         // Note: Set up navigation (로그인에서 설정된다면 제거 필요)
-        let barAppearance = UINavigationBarAppearance().then {
-            $0.configureWithOpaqueBackground()
-            $0.shadowColor = .clear
-        }
-
-        navigationController.do {
-            $0.navigationBar.standardAppearance = barAppearance
-            $0.modalPresentationStyle = .fullScreen
-        }
+        setupNavigationBar()
 
         navigationController.pushViewController(
             startViewController,
@@ -84,5 +85,27 @@ extension ProfileEditSceneBuilder {
         return worrySceneBuilder
             .make(with: .init(coordinatorProvider: provider))
             .viewController
+    }
+}
+
+extension ProfileEditSceneBuilder {
+    private func setupNavigationBar() {
+        navigationController.viewControllers
+            .forEach { $0.navigationItem.backBarButtonItem = backBarButtonItemWithNoTitle }
+
+        let backImage = UIImage.icon(icon: .caretLeft, size: .p24, color: .gray500)
+        let barAppearance = UINavigationBarAppearance().then {
+            $0.configureWithTransparentBackground()
+            $0.shadowColor = .clear
+            $0.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+        }
+
+        navigationController.do {
+            $0.navigationBar.standardAppearance = barAppearance
+            $0.navigationBar.scrollEdgeAppearance = barAppearance
+            $0.navigationBar.compactAppearance = barAppearance
+            $0.navigationBar.compactScrollEdgeAppearance = barAppearance
+            $0.modalPresentationStyle = .fullScreen
+        }
     }
 }

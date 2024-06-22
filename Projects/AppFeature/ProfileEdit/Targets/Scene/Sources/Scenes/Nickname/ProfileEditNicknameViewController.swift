@@ -29,6 +29,7 @@ final class ProfileEditNicknameViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.coordinator?.setNavigationItems()
         self.setUI()
     }
 }
