@@ -60,7 +60,7 @@ extension ProfileEditNicknameViewController {
                 $0.setTapHandler { [weak self] in
                     guard let self else { return }
 
-                    self.coordinator?.next()
+                    self.router?.showAgree()
                 }
             }
     }

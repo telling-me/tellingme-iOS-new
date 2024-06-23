@@ -39,6 +39,9 @@ final class ProfileEditNicknameScenBuilder {
     public func make(with configuration: ProfileEditNicknameConfiguration) -> ProfileEditNicknameScene {
         let viewController = ProfileEditNicknameViewController()
         let worker = ProfileEditNicknameWorker()
+        let coordinator = configuration
+            .coordinatorProvider
+            .coordinator(viewController: viewController)
         let presenter = ProfileEditNicknamePresenter(
             viewController: viewController
         )
@@ -49,14 +52,13 @@ final class ProfileEditNicknameScenBuilder {
         )
         let router = ProfileEditNicknameRouter(
             viewController: viewController,
-            dataStore: interactor
+            dataStore: interactor,
+            coordinator: coordinator
         )
         
         viewController.interactor = interactor
         viewController.router = router
-        viewController.coordinator = configuration
-            .coordinatorProvider
-            .coordinator(viewController: viewController)
+        viewController.coordinator = coordinator
 
         return viewController
     }

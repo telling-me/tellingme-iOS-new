@@ -17,6 +17,7 @@ let project = Project.make(
           dependencies: [
             .project(target: "AppCoreKit", path: "../../AppCore", condition: .when(.all)),
             .project(target: "SharedKit", path: "../../Shared", condition: .when(.all)),
+            .project(target: "ProfileEditScene", path: "../ProfileEdit", condition: .when(.all)),
             .external(name: "SnapKit", condition: .when(.all)),
             .external(name: "Then", condition: .when(.all))
           ]
