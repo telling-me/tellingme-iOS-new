@@ -38,7 +38,7 @@ final class ProfileEditAgreeViewController: UIViewController {
 extension ProfileEditAgreeViewController {
     private func setupUI() {
         view.backgroundColor = .white
-        
+
         BoxButton(text: "다음", attributes: .primaryLarge)
             .do {
                 view.addSubview($0)

@@ -18,7 +18,7 @@ protocol ProfileEditWorrySceneCoordinator: ProfileEditSceneCoordinator {}
 
 protocol ProfileEditWorryDisplayLogic: AnyObject {}
 
-final class ProfileEditWorryViewController: UIViewController {
+final class ProfileEditWorryViewController: ProfileEditViewController {
     var interactor: (any ProfileEditWorryBusinessLogic)?
     var router: (any ProfileEditWorryRoutingLogic)?
     var coordinator: (any ProfileEditWorrySceneCoordinator)?
@@ -38,12 +38,13 @@ final class ProfileEditWorryViewController: UIViewController {
 
 extension ProfileEditWorryViewController {
     private func setUI() {
-        view.backgroundColor = .white
+        configureHeader(content: .worry)
 
         UILabel()
             .do {
                 $0.setText(text: "고민 화면", style: .body_01_B)
-                view.addSubview($0)
+
+                contentView.addSubview($0)
                 $0.snp.makeConstraints { make in
                     make.center.equalToSuperview()
                 }
@@ -51,7 +52,7 @@ extension ProfileEditWorryViewController {
 
         BoxButton(text: "완료", attributes: .primaryLarge)
             .do {
-                view.addSubview($0)
+                contentView.addSubview($0)
                 $0.snp.makeConstraints { make in
                     make.centerX.equalToSuperview()
                     make.centerY.equalToSuperview().offset(100)

@@ -18,7 +18,7 @@ protocol ProfileEditBirthGenderSceneCoordinator: ProfileEditSceneCoordinator {}
 
 protocol ProfileEditBirthGenderDisplayLogic: AnyObject {}
 
-final class ProfileEditBirthGenderViewController: UIViewController {
+final class ProfileEditBirthGenderViewController: ProfileEditViewController {
     var interactor: (any ProfileEditBirthGenderBusinessLogic)?
     var router: (any ProfileEditBirthGenderRoutingLogic)?
     var coordinator: (any ProfileEditBirthGenderSceneCoordinator)?
@@ -38,12 +38,12 @@ final class ProfileEditBirthGenderViewController: UIViewController {
 
 extension ProfileEditBirthGenderViewController {
     private func setUI() {
-        view.backgroundColor = .white
+        configureHeader(content: .birthGender)
 
         UILabel()
             .do {
                 $0.setText(text: "생일/성별 화면", style: .body_01_B)
-                view.addSubview($0)
+                contentView.addSubview($0)
                 $0.snp.makeConstraints { make in
                     make.center.equalToSuperview()
                 }
@@ -51,7 +51,7 @@ extension ProfileEditBirthGenderViewController {
 
         BoxButton(text: "다음", attributes: .primaryLarge)
             .do {
-                view.addSubview($0)
+                contentView.addSubview($0)
                 $0.snp.makeConstraints { make in
                     make.centerX.equalToSuperview()
                     make.centerY.equalToSuperview().offset(100)

@@ -18,13 +18,13 @@ protocol ProfileEditJobSceneCoordinator: ProfileEditSceneCoordinator {}
 
 protocol ProfileEditJobDisplayLogic: AnyObject {}
 
-final class ProfileEditJobViewController: UIViewController {
+final class ProfileEditJobViewController: ProfileEditViewController {
     var interactor: (any ProfileEditJobBusinessLogic)?
     var router: (any ProfileEditJobRoutingLogic)?
     var coordinator: (any ProfileEditJobSceneCoordinator)?
 
     // MARK: - UI
-    
+
     // MARK: - View Lifecycle
     
     override func viewDidLoad() {
@@ -38,12 +38,12 @@ final class ProfileEditJobViewController: UIViewController {
 
 extension ProfileEditJobViewController {
     private func setUI() {
-        view.backgroundColor = .white
+        configureHeader(content: .job)
 
         UILabel()
             .do {
                 $0.setText(text: "직업 화면", style: .body_01_B)
-                view.addSubview($0)
+                contentView.addSubview($0)
                 $0.snp.makeConstraints { make in
                     make.center.equalToSuperview()
                 }
@@ -51,7 +51,7 @@ extension ProfileEditJobViewController {
 
         BoxButton(text: "다음", attributes: .primaryLarge)
             .do {
-                view.addSubview($0)
+                contentView.addSubview($0)
                 $0.snp.makeConstraints { make in
                     make.centerX.equalToSuperview()
                     make.centerY.equalToSuperview().offset(100)

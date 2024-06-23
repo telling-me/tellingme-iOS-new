@@ -18,7 +18,7 @@ protocol ProfileEditNicknameSceneCoordinator: ProfileEditSceneCoordinator {}
 
 protocol ProfileEditNicknameDisplayLogic: AnyObject {}
 
-final class ProfileEditNicknameViewController: UIViewController {
+final class ProfileEditNicknameViewController: ProfileEditViewController {
     var interactor: (any ProfileEditNicknameBusinessLogic)?
     var router: (any ProfileEditNicknameRoutingLogic)?
     var coordinator: (any ProfileEditNicknameSceneCoordinator)?
@@ -38,12 +38,13 @@ final class ProfileEditNicknameViewController: UIViewController {
 
 extension ProfileEditNicknameViewController {
     private func setUI() {
-        view.backgroundColor = .white
+        configureHeader(content: .nickname)
 
         UILabel()
             .do {
                 $0.setText(text: "닉네임 화면", style: .body_01_B)
-                view.addSubview($0)
+                
+                contentView.addSubview($0)
                 $0.snp.makeConstraints { make in
                     make.center.equalToSuperview()
                 }
@@ -51,7 +52,7 @@ extension ProfileEditNicknameViewController {
 
         BoxButton(text: "다음", attributes: .primaryLarge)
             .do {
-                view.addSubview($0)
+                contentView.addSubview($0)
                 $0.snp.makeConstraints { make in
                     make.centerX.equalToSuperview()
                     make.centerY.equalToSuperview().offset(100)
