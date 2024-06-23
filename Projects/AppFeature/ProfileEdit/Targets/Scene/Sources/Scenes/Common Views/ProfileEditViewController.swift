@@ -55,8 +55,8 @@ extension ProfileEditViewController {
             contentView.addSubview($0)
 
             $0.snp.makeConstraints { make in
-                make.top.equalToSuperview().offset(30)
-                make.directionalHorizontalEdges.equalToSuperview().inset(20)
+                make.top.equalToSuperview().offset(Const.topSpacing)
+                make.directionalHorizontalEdges.equalToSuperview().inset(Const.contentInsets)
             }
         }
     }
@@ -67,5 +67,18 @@ extension ProfileEditViewController {
 extension ProfileEditViewController {
     func configureHeader(content: HeaderView.Content) {
         headerView.configure(content: content)
+    }
+}
+
+// MARK: - Const
+
+extension ProfileEditViewController {
+    var contentInsets: CGFloat {
+        Const.contentInsets
+    }
+
+    enum Const {
+        static let contentInsets = 20.0
+        static let topSpacing = 30.0
     }
 }

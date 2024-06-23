@@ -12,11 +12,15 @@ import Foundation
 import AppCore_Entity
 import SharedKit
 
-protocol ProfileEditNicknameBusinessLogic {}
+protocol ProfileEditNicknameBusinessLogic {
+    func verifyNickname(_ nickname: String)
+}
 
 protocol ProfileEditNicknameDataStore: AnyObject {}
 
-final class ProfileEditNicknameInteractor: ProfileEditNicknameBusinessLogic, ProfileEditNicknameDataStore {
+final class ProfileEditNicknameInteractor
+: ProfileEditNicknameBusinessLogic,
+  ProfileEditNicknameDataStore {
     private let presenter: ProfileEditNicknamePresentationLogic
     private let worker: ProfileEditNicknameWorkerProtocol
     private let externalDataStore: ProfileEditDataStore
@@ -34,8 +38,31 @@ final class ProfileEditNicknameInteractor: ProfileEditNicknameBusinessLogic, Pro
     // MARK: - DataStore
 }
 
-// MARK: Feature ()
+// MARK: Feature (닉네임 유효성 체크)
 
 extension ProfileEditNicknameInteractor {
-    
+    func verifyNickname(_ nickname: String) {
+        var errorType: ProfileEditNickname.NicknameErrorType?
+
+        // 글자수 제한
+        let textCount = nickname.count
+        let textCountRange = (ProfileEditNickname.Const.nicknameMinCount...ProfileEditNickname.Const.nicknameMaxCount)
+        if textCountRange.contains(textCount) == false,
+           textCount != 0 {
+            errorType = .invalidTextCount
+        }
+        presentNicknameErrorIfNeeded(errorType)
+
+        // 한국어 이외 문자 제한
+        let koreanRegex = "^[가-힣ㄱ-ㅎㅏ-ㅣ]*$"
+        let predicate = NSPredicate(format:"SELF MATCHES %@", koreanRegex)
+        if predicate.evaluate(with: nickname) == false {
+            errorType = .invalidKorean
+        }
+        presentNicknameErrorIfNeeded(errorType)
+    }
+
+    private func presentNicknameErrorIfNeeded(_ errorType: ProfileEditNickname.NicknameErrorType?) {
+        presenter.presentNicknameValidity(errorType: errorType)
+    }
 }
