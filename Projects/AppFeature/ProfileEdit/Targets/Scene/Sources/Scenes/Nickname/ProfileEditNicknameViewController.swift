@@ -28,7 +28,11 @@ final class ProfileEditNicknameViewController: ProfileEditViewController {
     var coordinator: (any ProfileEditNicknameSceneCoordinator)?
 
     // MARK: - UI
+
     private let nicknameInput = InputField()
+    private let nextButton = BoxButton(text: "다음", attributes: .primaryLarge)
+
+    private var buttonBottomInsetConstraint: Constraint?
 
     // MARK: - View Lifecycle
     
@@ -37,7 +41,18 @@ final class ProfileEditNicknameViewController: ProfileEditViewController {
 
         coordinator?.setNavigationItems()
         setUI()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
         bind()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        cancellables.removeAll()
     }
 }
 
@@ -54,27 +69,36 @@ extension ProfileEditNicknameViewController {
             contentView.addSubview(nicknameInput)
             nicknameInput.snp.makeConstraints { make in
                 make.top.equalTo(headerView.snp.bottom).offset(Const.nicknameTopSpacing)
-                make.directionalHorizontalEdges.equalToSuperview().inset(contentInsets)
+                make.directionalHorizontalEdges.equalToSuperview().inset(horizontalInsets)
             }
         }
 
-        BoxButton(text: "다음", attributes: .primaryLarge)
-            .do {
-                contentView.addSubview($0)
-                $0.snp.makeConstraints { make in
-                    make.centerX.equalToSuperview()
-                    make.centerY.equalToSuperview().offset(100)
-                }
+        nextButton.do {
+            $0.isEnabled = false
 
-                $0.setTapHandler { [weak self] in
-                    guard let self else { return }
-
-                    self.router?.showAgree()
-                }
+            view.addSubview($0)
+            $0.snp.makeConstraints { make in
+                buttonBottomInsetConstraint = make.bottom
+                    .equalTo(view.safeAreaLayoutGuide)
+                    .inset(buttonBottomInset)
+                    .constraint
+                make.directionalHorizontalEdges.equalToSuperview().inset(horizontalInsets)
             }
+
+            $0.setTapHandler { [weak self] in
+                self?.coordinator?.next()
+            }
+        }
     }
 
     private func bind() {
+        Publishers.Merge(
+            NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification),
+            NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
+        )
+        .sink { [weak self] in self?.animateButton(notification: $0) }
+        .store(in: &cancellables)
+
         nicknameInput.editingDidEndPublisher
             .removeDuplicates()
             .sink { [weak self] in self?.interactor?.verifyNickname($0) }
@@ -87,11 +111,46 @@ extension ProfileEditNicknameViewController {
     }
 }
 
+extension ProfileEditNicknameViewController {
+    private func animateButton(notification: Notification) {
+        guard let (duration, curve, height) = getAnimationProperties(notification: notification) else { return }
+
+        let buttonBottomInset = height == .zero ? buttonBottomInset : -buttonBottomInset
+        let inset = height + buttonBottomInset
+        buttonBottomInsetConstraint?.update(inset: inset)
+
+        UIViewPropertyAnimator(
+            duration: duration,
+            curve: curve,
+            animations: { self.view.layoutIfNeeded() }
+        )
+        .startAnimation()
+    }
+
+    private func getAnimationProperties(notification: Notification) -> (Double, UIView.AnimationCurve, CGFloat)? {
+        let willHideNotificationName = UIResponder.keyboardWillHideNotification
+        let durationKey = UIResponder.keyboardAnimationDurationUserInfoKey
+        let curveKey = UIResponder.keyboardAnimationCurveUserInfoKey
+        let frameKey = UIResponder.keyboardFrameEndUserInfoKey
+
+        guard let userInfo = notification.userInfo,
+              let duration = userInfo[durationKey] as? Double,
+              let curveValue = userInfo[curveKey] as? Int,
+              let curve = UIView.AnimationCurve(rawValue: curveValue),
+              let keyboardFrame = userInfo[frameKey] as? CGRect
+        else { return nil }
+
+        let height: CGFloat = notification.name == willHideNotificationName ? .zero : keyboardFrame.height
+        return (duration, curve, height)
+    }
+}
+
 // MARK: - Display Logic
 
 extension ProfileEditNicknameViewController: ProfileEditNicknameDisplayLogic {
     func displayNicknameValidity(_ validity: InputField.Validity) {
         nicknameInput.updateValidity(validity)
+        nextButton.isEnabled = validity == .valid
     }
 }
 

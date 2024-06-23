@@ -73,12 +73,17 @@ extension ProfileEditViewController {
 // MARK: - Const
 
 extension ProfileEditViewController {
-    var contentInsets: CGFloat {
+    var horizontalInsets: CGFloat {
         Const.contentInsets
+    }
+
+    var buttonBottomInset: CGFloat {
+        Const.buttonBottomInset
     }
 
     enum Const {
         static let contentInsets = 20.0
         static let topSpacing = 30.0
+        static let buttonBottomInset = 16.0
     }
 }
