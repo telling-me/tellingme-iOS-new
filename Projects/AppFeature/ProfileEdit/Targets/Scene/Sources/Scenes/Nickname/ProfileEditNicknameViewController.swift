@@ -150,7 +150,7 @@ extension ProfileEditNicknameViewController {
 extension ProfileEditNicknameViewController: ProfileEditNicknameDisplayLogic {
     func displayNicknameValidity(_ validity: InputField.Validity) {
         nicknameInput.updateValidity(validity)
-        nextButton.isEnabled = validity == .valid
+        nextButton.isEnabled = validity == .valid || nicknameInput.text.isEmpty == false
     }
 }
 

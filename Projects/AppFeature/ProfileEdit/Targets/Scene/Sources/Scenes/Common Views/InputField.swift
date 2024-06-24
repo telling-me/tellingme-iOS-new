@@ -115,6 +115,10 @@ extension InputField {
 // MARK: - Configure (Interface)
 
 extension InputField {
+    var text: String {
+        textField.text ?? ""
+    }
+
     var textPublisher: AnyPublisher<String, Never> {
         textField.textDidChange
             .eraseToAnyPublisher()
