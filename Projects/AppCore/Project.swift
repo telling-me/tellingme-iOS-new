@@ -49,7 +49,11 @@ let project = Project.make(
       bundleId: Const.appCoreBundleId + ".DesignSystem",
       deploymentTargets: .iOS(Const.minimumTargetVersion),
       sources: ["DesignSystem/Sources/**"],
-      resources: ["DesignSystem/Resources/**"]
+      resources: ["DesignSystem/Resources/**"],
+      dependencies: [
+        .external(name: "SnapKit", condition: .when(.all)),
+        .external(name: "Then", condition: .when(.all))
+      ]
     )
   ],
   resourceSynthesizers: .default

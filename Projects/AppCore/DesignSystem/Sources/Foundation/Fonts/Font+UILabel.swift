@@ -12,13 +12,15 @@ extension UILabel {
     public func setText(
         text: String?,
         style: Font.Style,
-        textColor: UIColor? = nil
+        textColor: UIColor? = nil,
+        textAlignment: NSTextAlignment = .natural
     ) {
         self.attributedText = Font.build(
             string: text,
             attributes: .init(
                 style: style,
-                textColor: textColor
+                textColor: textColor,
+                textAlignment: textAlignment
             )
         )
     }

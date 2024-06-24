@@ -133,6 +133,9 @@ extension Font {
         paragraphStyle.maximumLineHeight = attributes.style.lineHeight
         paragraphStyle.minimumLineHeight = attributes.style.lineHeight
         
+        // MARK: - Set up (Alignment)
+        paragraphStyle.alignment = attributes.textAlignment
+        
         attributedString[.paragraphStyle] = paragraphStyle
         
         // MARK: - Set up (Color)
