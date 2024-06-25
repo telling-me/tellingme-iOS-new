@@ -11,22 +11,17 @@ import SnapKit
 import Then
 
 final public class QuestionSectionView: UIView {
-    public enum ViewType {
-        case button
-        case nonButton
-    }
-    
     public struct Content: Hashable {
-        let question: String?
-        let subQuestion: String?
+        let question: String
+        let subQuestion: String
         
-        public init(question: String?, subQuestion: String?) {
+        public init(question: String, subQuestion: String) {
             self.question = question
             self.subQuestion = subQuestion
         }
     }
     
-    private var type: ViewType
+    private var hasButton: Bool
     
     private let qLabel: UILabel = UILabel()
     private let questionLabel: UILabel = UILabel()
@@ -35,16 +30,16 @@ final public class QuestionSectionView: UIView {
     private let button: BoxButton = BoxButton(text: "기록하기", attributes: .primaryMedium)
     
     public convenience init(
-        type: ViewType = .button
+        hasButton: Bool = true
     ) {
         self.init(frame: .zero)
-        self.type = type
+        self.hasButton = hasButton
 
         configure()
     }
     
     public override init(frame: CGRect) {
-         self.type = .button
+         self.hasButton = true
          super.init(frame: frame)
          
          configure()
@@ -57,7 +52,7 @@ final public class QuestionSectionView: UIView {
 
 extension QuestionSectionView {
     private func configure() {
-        backgroundColor = type == .button ? .base00 : .background100
+        backgroundColor = hasButton ? .base00 : .background100
         layer.cornerRadius = 12
         
         qLabel.do {
@@ -78,7 +73,7 @@ extension QuestionSectionView {
         }
         
         button.do {
-            $0.isHidden = type == .nonButton
+            $0.isHidden = !hasButton
             
             self.addSubview($0)
             $0.snp.makeConstraints { make in
@@ -110,7 +105,7 @@ extension QuestionSectionView {
         qLabel.do {
             $0.snp.makeConstraints { make in
                 make.size.equalTo(28)
-                make.top.equalToSuperview().inset(type == .button ? 17.5 : 8)
+                make.top.equalToSuperview().inset(hasButton ? 17.5 : 8)
                 make.centerX.equalToSuperview()
             }
         }
@@ -127,7 +122,7 @@ extension QuestionSectionView {
             $0.snp.makeConstraints{ make in
                 make.directionalHorizontalEdges.equalToSuperview().inset(22)
                 make.top.equalTo(qLabel.snp.bottom).offset(12)
-                make.bottom.equalToSuperview().inset(type == .button ? 73.5 : 8)
+                make.bottom.equalToSuperview().inset(hasButton ? 73.5 : 8)
             }
         }
     }

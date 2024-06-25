@@ -81,7 +81,7 @@ extension QuestionSectionViewController {
     final class Cell: UICollectionViewCell {
         static let identifier = "QuestionSectionCell"
         
-        private let questionSectionView: QuestionSectionView = QuestionSectionView(type: .nonButton)
+        private let questionSectionView: QuestionSectionView = QuestionSectionView(hasButton: false)
         
         override init(frame: CGRect) {
             super.init(frame: frame)
@@ -107,7 +107,7 @@ extension QuestionSectionViewController {
     final class ButtonCell: UICollectionViewCell {
         static let identifier = "ButtonQuestionSectionCell"
         
-        private let questionSectionView: QuestionSectionView = QuestionSectionView(type: .button)
+        private let questionSectionView: QuestionSectionView = QuestionSectionView(hasButton: true)
         
         override init(frame: CGRect) {
             super.init(frame: frame)
