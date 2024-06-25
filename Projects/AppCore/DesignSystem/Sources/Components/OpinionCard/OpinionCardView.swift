@@ -45,7 +45,7 @@ final public class OpinionCardView: UIView {
     private let emotionImageView: UIImageView = UIImageView()
     private let emotionTitleLabel: UILabel = UILabel()
     private let contentView: UITextView = UITextView()
-    private let heartButton: UIButton = UIButton()
+    private let heartButton: BaseButton = BaseButton()
     
     public convenience init(style: Style) {
         self.init(frame: .zero)
@@ -87,10 +87,8 @@ extension OpinionCardView {
         
         heartButton.do {
             self.addSubview($0)
-            $0.setTitleColor(.gray600, for: .normal)
-            $0.titleLabel?.font = .fontNanum(.caption_01_B)
-            $0.setImage(.icon(icon: .heart, size: .p24, color: .red500), for: .selected)
-            $0.setImage(.icon(icon: .heart, size: .p24, color: .gray200), for: .normal)
+            $0.setIcon(attributes: .init(icon: .heart, size: .p24, color: .red500), for: .selected)
+            $0.setIcon(attributes: .init(icon: .heart, size: .p24, color: .gray200), for: .normal)
             
             $0.snp.makeConstraints { make in
                 make.height.equalTo(48)
@@ -161,7 +159,7 @@ extension OpinionCardView {
         emotionImageView.image = content.emotionImage
         contentView.setText(text: content.content, style: .caption_01_R)
         heartButton.isSelected = content.isLiked
-        heartButton.setTitle("\(content.likeCount)", for: .normal)
+        heartButton.setAttributedText("\(content.likeCount)", style: .caption_01_B, textColor: .gray600, for: .normal)
         emotionTitleLabel.setText(text: " \(content.emotionText) ", style: .body_02_B, textColor: .gray600)
     }
 }
