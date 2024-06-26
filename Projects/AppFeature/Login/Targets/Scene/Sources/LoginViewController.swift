@@ -1,6 +1,6 @@
 //
 //  LoginViewController.swift
-//  
+//
 //
 //  Created by Woody Lee on 6/22/24.
 //  Copyright (c) 2024 tellingUs. All rights reserved.
@@ -12,6 +12,7 @@ import Then
 import UIKit
 
 import AppCore_DesignSystem
+import ProfileEditScene
 import SharedKit
 
 protocol LoginDisplayLogic: AnyObject {}
@@ -21,9 +22,9 @@ final class LoginViewController: UIViewController {
     var router: (any LoginRoutingLogic)?
 
     // MARK: - UI
-    
+
     // MARK: - View Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUI()
@@ -43,8 +44,14 @@ extension LoginViewController {
                 }
 
                 $0.setTapHandler { [weak self] in
-                    guard let self else { return }
-                    
+                    guard let self,
+                          let navigationController
+                    else { return }
+
+                    ProfileEditSceneBuilder(
+                        navigationController: navigationController
+                    )
+                    .showProfileEditScene(from: self)
                 }
             }
     }
@@ -53,11 +60,11 @@ extension LoginViewController {
 // MARK: - Display Logic
 
 extension LoginViewController: LoginDisplayLogic {
-    
+
 }
 
 // MARK: - Scene
 
 extension LoginViewController: LoginScene {
-    
+
 }

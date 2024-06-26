@@ -13,7 +13,8 @@ let project = Project.make(
       sources: ["Sources/**"],
       dependencies: [
         .project(target: "RootScene", path: "../Root", condition: .when(.all)),
-        .project(target: "LoginScene", path: "../Login", condition: .when(.all))
+        .project(target: "LoginScene", path: "../Login", condition: .when(.all)),
+        .project(target: "ProfileEditScene", path: "../ProfileEdit", condition: .when(.all))
       ]
     ),
   ]
