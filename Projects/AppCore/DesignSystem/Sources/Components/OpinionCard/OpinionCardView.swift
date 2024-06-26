@@ -21,11 +21,12 @@ final public class OpinionCardView: UIView {
         let isLiked: Bool
         let likeCount: Int
         
-        public init(emotionImage: UIImage,
-                    emotionText: String,
-                    content: String,
-                    isLiked: Bool,
-                    likeCount: Int
+        public init(
+            emotionImage: UIImage,
+            emotionText: String,
+            content: String,
+            isLiked: Bool,
+            likeCount: Int
         ) {
             self.emotionImage = emotionImage
             self.emotionText = emotionText
