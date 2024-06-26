@@ -1,15 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "lethargic_52.png",
+      "filename" : "lethargic_52.pdf",
       "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "template-rendering-intent" : "original"
   }
 }

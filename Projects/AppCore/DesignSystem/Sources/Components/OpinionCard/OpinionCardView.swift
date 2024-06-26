@@ -15,14 +15,14 @@ import Then
 final public class OpinionCardView: UIView {
     
     public struct Content {
-        let emotionImage: UIImage
+        let emotionImage: String
         let emotionText: String
         let content: String
         let isLiked: Bool
         let likeCount: Int
         
         public init(
-            emotionImage: UIImage,
+            emotionImage: String,
             emotionText: String,
             content: String,
             isLiked: Bool,
@@ -40,20 +40,27 @@ final public class OpinionCardView: UIView {
         case preview
         case normal // Note: Preview와 Normal은 AutoLayout에 차이가 없다.
         case full
+        
+        var maximumLine: Int {
+            switch self {
+            case .preview: 3
+            case .normal: 4
+            case .full: 23
+            }
+        }
     }
+    
+    private let style: Style
     
     private let emotionImageView: UIImageView = UIImageView()
     private let emotionTitleLabel: UILabel = UILabel()
     private let contentView: UITextView = UITextView()
     private let heartButton: BaseButton = BaseButton()
     
-    public convenience init(style: Style) {
-        self.init(frame: .zero)
-        setUI(style)
-    }
-    
-    override public init(frame: CGRect) {
-        super.init(frame: frame)
+    public init(style: Style) {
+        self.style = style
+        super.init(frame: .zero)
+        setUI()
     }
     
     required init?(coder: NSCoder) {
@@ -62,7 +69,7 @@ final public class OpinionCardView: UIView {
 }
 
 extension OpinionCardView {
-    private func setUI(_ style: Style) {
+    private func setUI() {
         backgroundColor = .base00
         
         emotionImageView.do {
@@ -83,6 +90,8 @@ extension OpinionCardView {
             $0.isSelectable = false
             $0.isScrollEnabled = style == .full
             $0.textContainerInset = .zero
+            $0.textContainer.maximumNumberOfLines = style.maximumLine
+            $0.textContainer.lineBreakMode = .byTruncatingTail
         }
         
         heartButton.do {
@@ -155,8 +164,18 @@ extension OpinionCardView {
 }
 
 extension OpinionCardView {
+    private func getImage(imageString: String) -> UIImage {
+        let bundle = AppCoreDesignSystemResources.bundle
+        guard let image = UIImage(named: imageString, in: bundle, compatibleWith: nil) else {
+            fatalError("❌ 감정 이미지를 찾을 수 없습니다.")
+        }
+        return image
+    }
+}
+
+extension OpinionCardView {
     public func configure(with content: Content) {
-        emotionImageView.image = content.emotionImage
+        emotionImageView.image = getImage(imageString: content.emotionImage)
         contentView.setText(text: content.content, style: .caption_01_R)
         heartButton.isSelected = content.isLiked
         heartButton.setAttributedText("\(content.likeCount)", style: .caption_01_B, textColor: .gray600, for: .normal)

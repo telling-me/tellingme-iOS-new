@@ -54,4 +54,8 @@ public enum Emotion: String {
         let bundle = AppCoreDesignSystemResources.bundle
         return UIImage(named: "\(self.english)_\(size.rawValue)", in: bundle, compatibleWith: nil) ?? AppCoreDesignSystemAsset.Emotions.happy52.image
     }
+    
+    public func getImageString(size: Size) -> String {
+        return "\(self.english)_\(size.rawValue)"
+    }
 }

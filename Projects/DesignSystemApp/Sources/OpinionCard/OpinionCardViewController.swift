@@ -28,7 +28,7 @@ final class OpinionCardViewController: UIViewController {
         }
         
         opinionCardView.configure(with: .init(
-            emotionImage: testEmotion.getImage(size: .large),
+            emotionImage: testEmotion.getImageString(size: .large),
             emotionText: testEmotion.korean,
             content: "대학교 1학년 시절, 내가 학교 생활로 힘들어할 때 선배가 술을 사주면서 한 말이 있다. 지금 이 순간이 힘들다 느껴도 나 어쩌구 저쩌구 저쩌구 오쪼구",
             isLiked: true,
