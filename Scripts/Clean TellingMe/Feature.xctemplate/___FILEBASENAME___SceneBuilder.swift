@@ -21,7 +21,7 @@ public struct ___VARIABLE_sceneName___Configuration {
     
 }
 
-public final class ___VARIABLE_sceneName___ScenBuilder {
+public final class ___VARIABLE_sceneName___SceneBuilder {
     
     public init() {}
     
