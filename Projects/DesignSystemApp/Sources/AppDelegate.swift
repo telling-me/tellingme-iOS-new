@@ -23,7 +23,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = window
 
         // Set root
-        let viewController = ColorViewController()
+        let viewController = OpinionCardViewController()
         window.rootViewController = viewController
 
         // Present Window
