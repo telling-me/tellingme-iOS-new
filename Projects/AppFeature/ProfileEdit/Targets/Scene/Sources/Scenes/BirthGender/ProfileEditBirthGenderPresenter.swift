@@ -10,7 +10,11 @@ import Foundation
 
 import SharedKit
 
-protocol ProfileEditBirthGenderPresentationLogic {}
+protocol ProfileEditBirthGenderPresentationLogic {
+    func presentBirthGender(birth: Int?, gender: EditingProfile.Gender?)
+    func presentBirthValidity(errorType: ProfileEditBirthGender.BirthErrorType?)
+    func presentButton(isEnabled: Bool)
+}
 
 final class ProfileEditBirthGenderPresenter {
     private weak var viewController: (any ProfileEditBirthGenderDisplayLogic)?
@@ -23,5 +27,28 @@ final class ProfileEditBirthGenderPresenter {
 // MARK: - Presentation Logic
 
 extension ProfileEditBirthGenderPresenter: ProfileEditBirthGenderPresentationLogic {
-    
+    func presentBirthGender(birth: Int?, gender: EditingProfile.Gender?) {
+        viewController?.displayBirthGender(birth: birth.map { "\($0)" }, gender: gender)
+    }
+
+    func presentBirthValidity(errorType: ProfileEditBirthGender.BirthErrorType?) {
+        if let errorType {
+            viewController?.displayBirthValidity(.invalid(errorType.errorText))
+        } else {
+            viewController?.displayBirthValidity(.valid)
+        }
+    }
+
+    func presentButton(isEnabled: Bool) {
+        viewController?.displayNextButton(isEnabled: isEnabled)
+    }
+}
+
+extension ProfileEditBirthGender.BirthErrorType {
+    var errorText: String {
+        switch self {
+        case .invalidForm:
+            return "올바른 형식으로 다시 입력해주세요."
+        }
+    }
 }
