@@ -15,7 +15,7 @@ import AppCore_DesignSystem
 import SharedKit
 
 class ProfileEditViewController: UIViewController {
-    private let scrollView = UIScrollView()
+    let scrollView = UIScrollView()
     let contentView = UIView()
     let headerView = HeaderView()
 
@@ -67,6 +67,23 @@ extension ProfileEditViewController {
 extension ProfileEditViewController {
     func configureHeader(content: HeaderView.Content) {
         headerView.configure(content: content)
+    }
+
+    func getAnimationProperties(notification: Notification) -> (Double, UIView.AnimationCurve, CGFloat)? {
+        let willHideNotificationName = UIResponder.keyboardWillHideNotification
+        let durationKey = UIResponder.keyboardAnimationDurationUserInfoKey
+        let curveKey = UIResponder.keyboardAnimationCurveUserInfoKey
+        let frameKey = UIResponder.keyboardFrameEndUserInfoKey
+
+        guard let userInfo = notification.userInfo,
+              let duration = userInfo[durationKey] as? Double,
+              let curveValue = userInfo[curveKey] as? Int,
+              let curve = UIView.AnimationCurve(rawValue: curveValue),
+              let keyboardFrame = userInfo[frameKey] as? CGRect
+        else { return nil }
+
+        let height: CGFloat = notification.name == willHideNotificationName ? .zero : keyboardFrame.height
+        return (duration, curve, height)
     }
 }
 

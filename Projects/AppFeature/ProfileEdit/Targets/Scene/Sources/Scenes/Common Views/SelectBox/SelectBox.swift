@@ -28,9 +28,20 @@ public final class SelectBox: UIView {
         didTapSubject.eraseToAnyPublisher()
     }
 
+    private let didTapInputSubject = PassthroughSubject<Void, Never>()
+    var didTapInputPublisher: AnyPublisher<Void, Never> {
+        didTapInputSubject.eraseToAnyPublisher()
+    }
+
+    var inputPublisher: AnyPublisher<String, Never>? {
+        inputField?.textPublisher
+    }
+
     private var attributes: Attributes {
         didSet {
-            configure()
+            if oldValue != attributes {
+                configure()
+            }
         }
     }
 
@@ -125,6 +136,7 @@ extension SelectBox {
         }
 
         layoutIconImageViewIfNeeded()
+        layoutInputFieldIfNeeded()
     }
 
     private func layoutIconImageViewIfNeeded() {
@@ -148,6 +160,7 @@ extension SelectBox {
 
         let inputField = InputField()
         inputField.updatePlaceholder(inputPlaceholder)
+        inputField.isHidden = attributes.isSelected == false
 
         verticalStackView.addArrangedSubview(inputField)
 
@@ -171,8 +184,32 @@ extension SelectBox {
     private func configure() {
         checkImageView.image = .icon(icon: .check, size: .p24, color: mainColor)
         self.layer.borderColor = mainColor.cgColor
+
+        configureInputField()
+    }
+
+    private func configureInputField() {
+        guard let inputField else { return }
+
+        let shouldHide = attributes.isSelected == false
+        let additionalHeight = shouldHide ? 0 : inputField.frame.height
+        inputField.isHidden = shouldHide
+
+        UIView.animate(
+            withDuration: 0.2,
+            delay: 0,
+            options: .curveEaseInOut,
+            animations: { self.frame.size.height += additionalHeight }
+        )
+        
+        if shouldHide {
+            inputField.resignFirstResponder()
+        } else {
+            inputField.becomeFirstResponder()
+        }
     }
 }
+
 // MARK: - Interface
 
 extension SelectBox {

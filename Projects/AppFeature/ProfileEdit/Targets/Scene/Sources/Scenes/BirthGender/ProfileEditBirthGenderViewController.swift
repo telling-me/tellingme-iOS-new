@@ -186,23 +186,6 @@ extension ProfileEditBirthGenderViewController {
         )
         .startAnimation()
     }
-
-    private func getAnimationProperties(notification: Notification) -> (Double, UIView.AnimationCurve, CGFloat)? {
-        let willHideNotificationName = UIResponder.keyboardWillHideNotification
-        let durationKey = UIResponder.keyboardAnimationDurationUserInfoKey
-        let curveKey = UIResponder.keyboardAnimationCurveUserInfoKey
-        let frameKey = UIResponder.keyboardFrameEndUserInfoKey
-
-        guard let userInfo = notification.userInfo,
-              let duration = userInfo[durationKey] as? Double,
-              let curveValue = userInfo[curveKey] as? Int,
-              let curve = UIView.AnimationCurve(rawValue: curveValue),
-              let keyboardFrame = userInfo[frameKey] as? CGRect
-        else { return nil }
-
-        let height: CGFloat = notification.name == willHideNotificationName ? .zero : keyboardFrame.height
-        return (duration, curve, height)
-    }
 }
 
 // MARK: - Display Logic
@@ -223,6 +206,8 @@ extension ProfileEditBirthGenderViewController: ProfileEditBirthGenderDisplayLog
                 femaleSelectBox.updateIsSelected(true)
             }
         }
+
+        nextButton.isEnabled = true
     }
 
     func displayBirthValidity(_ validity: InputField.Validity) {

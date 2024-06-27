@@ -11,7 +11,7 @@ import UIKit
 import AppCore_DesignSystem
 
 extension SelectBox {
-    public struct Attributes {
+    public struct Attributes: Hashable {
         private(set) var text: String
         private(set) var icon: Icon.Attributes?
         private(set) var inputPlaceholder: String?

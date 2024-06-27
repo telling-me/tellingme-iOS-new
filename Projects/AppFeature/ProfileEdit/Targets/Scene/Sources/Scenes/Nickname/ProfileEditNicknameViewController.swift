@@ -74,7 +74,7 @@ extension ProfileEditNicknameViewController {
         }
 
         nextButton.do {
-            $0.isEnabled = false
+            $0.isEnabled = true
 
             view.addSubview($0)
             $0.snp.makeConstraints { make in
@@ -127,22 +127,6 @@ extension ProfileEditNicknameViewController {
         .startAnimation()
     }
 
-    private func getAnimationProperties(notification: Notification) -> (Double, UIView.AnimationCurve, CGFloat)? {
-        let willHideNotificationName = UIResponder.keyboardWillHideNotification
-        let durationKey = UIResponder.keyboardAnimationDurationUserInfoKey
-        let curveKey = UIResponder.keyboardAnimationCurveUserInfoKey
-        let frameKey = UIResponder.keyboardFrameEndUserInfoKey
-
-        guard let userInfo = notification.userInfo,
-              let duration = userInfo[durationKey] as? Double,
-              let curveValue = userInfo[curveKey] as? Int,
-              let curve = UIView.AnimationCurve(rawValue: curveValue),
-              let keyboardFrame = userInfo[frameKey] as? CGRect
-        else { return nil }
-
-        let height: CGFloat = notification.name == willHideNotificationName ? .zero : keyboardFrame.height
-        return (duration, curve, height)
-    }
 }
 
 // MARK: - Display Logic

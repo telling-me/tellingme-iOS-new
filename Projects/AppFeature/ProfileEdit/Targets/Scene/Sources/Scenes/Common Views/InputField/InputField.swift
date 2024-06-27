@@ -39,6 +39,14 @@ final class InputField: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    @discardableResult override func becomeFirstResponder() -> Bool {
+        return textField.becomeFirstResponder()
+    }
+
+    @discardableResult override func resignFirstResponder() -> Bool {
+        return textField.resignFirstResponder()
+    }
 }
 
 // MARK: - Set up

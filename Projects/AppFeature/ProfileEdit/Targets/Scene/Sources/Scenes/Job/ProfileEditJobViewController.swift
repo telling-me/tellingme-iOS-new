@@ -32,12 +32,26 @@ final class ProfileEditJobViewController: ProfileEditViewController {
     private let stackView = UIStackView()
     private let nextButton = BoxButton(text: "다음", attributes: .primaryLarge)
 
+    private var buttonBottomInsetConstraint: Constraint?
+
     // MARK: - View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.coordinator?.setNavigationItems()
         self.setUI()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        bind()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        cancellables.removeAll()
     }
 
     // MARK: - Action
@@ -65,13 +79,13 @@ extension ProfileEditJobViewController {
             $0.axis = .vertical
             $0.spacing = 12
             $0.alignment = .fill
-            $0.distribution = .fillEqually
+            $0.distribution = .fill
 
             contentView.addSubview($0)
             $0.snp.makeConstraints { make in
                 make.directionalHorizontalEdges.equalToSuperview().inset(horizontalInsets)
                 make.top.equalTo(headerView.snp.bottom).offset(30)
-                make.bottom.lessThanOrEqualToSuperview().inset(82)
+                make.bottom.lessThanOrEqualToSuperview().inset(Const.bottomInset)
             }
         }
 
@@ -79,7 +93,8 @@ extension ProfileEditJobViewController {
             let index = $0
             let selectBox = SelectBox(
                 text: $1.rawValue,
-                icon: .init(icon: $1.icon, size: .p24, color: nil)
+                icon: .init(icon: $1.icon, size: .p24, color: nil),
+                inputPlaceholder: $1.placeholder
             )
 
             selectBox.didTapPublisher
@@ -88,6 +103,53 @@ extension ProfileEditJobViewController {
 
             stackView.addArrangedSubview(selectBox)
         }
+
+        nextButton.do {
+            $0.isEnabled = true
+
+            view.addSubview($0)
+            $0.snp.makeConstraints { make in
+                buttonBottomInsetConstraint = make.bottom
+                    .equalTo(view.safeAreaLayoutGuide)
+                    .inset(buttonBottomInset)
+                    .constraint
+                make.directionalHorizontalEdges.equalToSuperview().inset(horizontalInsets)
+            }
+
+            $0.setTapHandler { [weak self] in
+                self?.coordinator?.next()
+            }
+        }
+
+    }
+
+    private func bind() {
+        Publishers.Merge(
+            NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification),
+            NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
+        )
+        .sink { [weak self] in self?.animate(notification: $0) }
+        .store(in: &cancellables)
+    }
+}
+
+extension ProfileEditJobViewController {
+    private func animate(notification: Notification) {
+        guard let (duration, curve, height) = getAnimationProperties(notification: notification) else { return }
+
+        let buttonBottomInset = height == .zero ? buttonBottomInset : -buttonBottomInset
+        let inset = height + buttonBottomInset
+        buttonBottomInsetConstraint?.update(inset: inset)
+
+        UIViewPropertyAnimator(
+            duration: duration,
+            curve: curve,
+            animations: { self.view.layoutIfNeeded() }
+        )
+        .startAnimation()
+
+        scrollView.setContentOffset(.init(x: .zero, y: 260), animated: true)
+        scrollView.contentInset.bottom = inset
     }
 }
 
@@ -105,6 +167,12 @@ extension ProfileEditJobViewController: ProfileEditJobScene {
 
 // MARK: - Const
 
+extension ProfileEditJobViewController {
+    private enum Const {
+        static let bottomInset = 82.0
+    }
+}
+
 private extension ProfileEditJob.Job {
     var icon: Icon {
         switch self {
@@ -120,6 +188,15 @@ private extension ProfileEditJob.Job {
             return .cookpot
         case .기타:
             return .etc
+        }
+    }
+
+    var placeholder: String? {
+        switch self {
+        case .기타:
+            return "하시는 일을 간단히 입력해주세요."
+        default:
+            return nil
         }
     }
 }
