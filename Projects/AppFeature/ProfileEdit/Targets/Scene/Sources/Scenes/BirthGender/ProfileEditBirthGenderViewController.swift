@@ -135,23 +135,17 @@ extension ProfileEditBirthGenderViewController {
         }
 
         maleSelectBox.do {
-            let gesture = UITapGestureRecognizer(
-                target: self,
-                action: #selector(didTapMaleSelectBox)
-            )
-            $0.isUserInteractionEnabled = true
-            $0.addGestureRecognizer(gesture)
+            $0.didTapPublisher
+                .sink { [weak self] in self?.didTapMaleSelectBox() }
+                .store(in: &cancellables)
 
             genderStackView.addArrangedSubview($0)
         }
 
         femaleSelectBox.do {
-            let gesture = UITapGestureRecognizer(
-                target: self,
-                action: #selector(didTapFemaleSelectBox)
-            )
-            $0.isUserInteractionEnabled = true
-            $0.addGestureRecognizer(gesture)
+            $0.didTapPublisher
+                .sink { [weak self] in self?.didTapFemaleSelectBox() }
+                .store(in: &cancellables)
 
             genderStackView.addArrangedSubview($0)
         }

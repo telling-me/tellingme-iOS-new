@@ -23,6 +23,11 @@ public final class SelectBox: UIView {
     private var iconImageView: UIImageView? = nil
     private var inputField: InputField? = nil
 
+    private let didTapSubject = PassthroughSubject<Void, Never>()
+    var didTapPublisher: AnyPublisher<Void, Never> {
+        didTapSubject.eraseToAnyPublisher()
+    }
+
     private var attributes: Attributes {
         didSet {
             configure()
@@ -56,6 +61,10 @@ public final class SelectBox: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    @objc private func didTapSelectBox() {
+        didTapSubject.send()
+    }
 }
 
 // MARK: - Set up
@@ -67,6 +76,13 @@ extension SelectBox {
             $0.layer.masksToBounds = true
             $0.layer.borderWidth = Const.borderWidth
             $0.layer.borderColor = mainColor.cgColor
+
+            let gesture = UITapGestureRecognizer(
+                target: self,
+                action: #selector(didTapSelectBox)
+            )
+            $0.isUserInteractionEnabled = true
+            $0.addGestureRecognizer(gesture)
         }
 
         verticalStackView.do {
