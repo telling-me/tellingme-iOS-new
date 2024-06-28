@@ -16,64 +16,108 @@ import SharedKit
 
 protocol ProfileEditNicknameSceneCoordinator: ProfileEditSceneCoordinator {}
 
-protocol ProfileEditNicknameDisplayLogic: AnyObject {}
+protocol ProfileEditNicknameDisplayLogic: AnyObject {
+    func displayNickname(_ nickname: String?)
+    func displayNicknameValidity(_ validity: InputField.Validity)
+}
 
-final class ProfileEditNicknameViewController: UIViewController {
+final class ProfileEditNicknameViewController: ProfileEditViewController {
     var interactor: (any ProfileEditNicknameBusinessLogic)?
     var router: (any ProfileEditNicknameRoutingLogic)?
     var coordinator: (any ProfileEditNicknameSceneCoordinator)?
 
     // MARK: - UI
-    
+
+    private let nicknameInput = InputField()
+
+    private var buttonBottomInsetConstraint: Constraint?
+
     // MARK: - View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.coordinator?.setNavigationItems()
-        self.setUI()
+
+        coordinator?.setNavigationItems()
     }
-}
 
-// MARK: - Set up
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 
-extension ProfileEditNicknameViewController {
-    private func setUI() {
-        view.backgroundColor = .white
+        interactor?.loadIfNeeded()
+    }
 
-        UILabel()
-            .do {
-                $0.setText(text: "닉네임 화면", style: .body_01_B)
-                view.addSubview($0)
-                $0.snp.makeConstraints { make in
-                    make.center.equalToSuperview()
-                }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        nicknameInput.becomeFirstResponder()
+    }
+
+    // MARK: - Set up
+
+    override func setupUI() {
+        super.setupUI()
+
+        headerView.configure(content: .nickname)
+
+        nicknameInput.do {
+            $0.setMaxCount(Const.nicknameMaxCount)
+            $0.updatePlaceholder(Const.nicknameInputPlaceholder)
+
+            contentView.addSubview(nicknameInput)
+            nicknameInput.snp.makeConstraints { make in
+                make.top.equalTo(headerView.snp.bottom).offset(Const.nicknameTopSpacing)
+                make.directionalHorizontalEdges.equalToSuperview().inset(horizontalInsets)
             }
+        }
 
-        BoxButton(text: "다음", attributes: .primaryLarge)
-            .do {
-                view.addSubview($0)
-                $0.snp.makeConstraints { make in
-                    make.centerX.equalToSuperview()
-                    make.centerY.equalToSuperview().offset(100)
-                }
+        nextButton.setTapHandler { [weak self] in
+            self?.coordinator?.next()
+        }
+    }
 
-                $0.setTapHandler { [weak self] in
-                    guard let self else { return }
+    // MARK: - Bind
 
-                    self.router?.showAgree()
-                }
-            }
+    override func bind() {
+        super.bind()
+
+        nicknameInput.editingDidEndPublisher
+            .removeDuplicates()
+            .sink { [weak self] in self?.interactor?.verifyNickname($0) }
+            .store(in: &cancellables)
+
+        nicknameInput.textPublisher
+            .removeDuplicates()
+            .sink { [weak self] in self?.interactor?.verifyNickname($0) }
+            .store(in: &cancellables)
     }
 }
 
 // MARK: - Display Logic
 
 extension ProfileEditNicknameViewController: ProfileEditNicknameDisplayLogic {
-    
+    func displayNickname(_ nickname: String?) {
+        nicknameInput.setText(nickname ?? "")
+    }
+
+    func displayNicknameValidity(_ validity: InputField.Validity) {
+        nicknameInput.updateValidity(validity)
+        nextButton.isEnabled = validity == .valid || nicknameInput.text.isEmpty == false
+    }
 }
 
 // MARK: - Scene
 
-extension ProfileEditNicknameViewController: ProfileEditNicknameScene {
+extension ProfileEditNicknameViewController: ProfileEditNicknameScene {}
 
+// MARK: - Const
+
+extension ProfileEditNicknameViewController {
+    private enum Const {
+        static let nicknameMinCount = ProfileEditNickname.Const.nicknameMinCount
+        static let nicknameMaxCount = ProfileEditNickname.Const.nicknameMaxCount
+        static let nicknameInputPlaceholder =
+        "\(nicknameMinCount)-\(nicknameMaxCount)자 이내 (영문, 숫자, 특수문자 제외)"
+
+        static let nicknameTopSpacing = 30.0
+    }
 }
