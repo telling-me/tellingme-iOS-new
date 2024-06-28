@@ -17,7 +17,7 @@ import SharedKit
 protocol ProfileEditJobSceneCoordinator: ProfileEditSceneCoordinator {}
 
 protocol ProfileEditJobDisplayLogic: AnyObject {
-    func displayJob(selectedIndex: Int?, etc: String?)
+    func displayJob(selectedIndex: Int?, etc: String?, isNextButtonEnabled: Bool)
 }
 
 final class ProfileEditJobViewController: ProfileEditViewController {
@@ -130,7 +130,7 @@ final class ProfileEditJobViewController: ProfileEditViewController {
 // MARK: - Display Logic
 
 extension ProfileEditJobViewController: ProfileEditJobDisplayLogic {
-    func displayJob(selectedIndex: Int?, etc: String?) {
+    func displayJob(selectedIndex: Int?, etc: String?, isNextButtonEnabled: Bool) {
         guard let selectedIndex else { return }
 
         stackView.arrangedSubviews
@@ -141,6 +141,8 @@ extension ProfileEditJobViewController: ProfileEditJobDisplayLogic {
                 $0.element.updateIsSelected(true)
                 $0.element.updateInput(etc ?? "")
             }
+
+        nextButton.isEnabled = isNextButtonEnabled
     }
 }
 

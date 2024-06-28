@@ -32,11 +32,17 @@ extension ProfileEditJobPresenter: ProfileEditJobPresentationLogic {
             .firstIndex(of: job.toViewModel)
 
         var etc: String? = nil
+        var isNextButtonEnabled: Bool = true
         if case let .기타(string) = job {
             etc = string
+            isNextButtonEnabled = string.isEmpty == false
         }
 
-        viewController?.displayJob(selectedIndex: index, etc: etc)
+        viewController?.displayJob(
+            selectedIndex: index,
+            etc: etc,
+            isNextButtonEnabled: isNextButtonEnabled
+        )
     }
 }
 
