@@ -9,7 +9,7 @@
 import UIKit
 
 extension Icon {
-    public struct Attributes {
+    public struct Attributes: Hashable {
         public let icon: Icon
         public let size: Size
         public let color: UIColor?
