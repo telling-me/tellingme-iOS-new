@@ -60,6 +60,7 @@ final class ProfileEditNicknameViewController: ProfileEditViewController {
         headerView.configure(content: .nickname)
 
         nicknameInput.do {
+            $0.delegate = self
             $0.setMaxCount(Const.nicknameMaxCount)
             $0.updatePlaceholder(Const.nicknameInputPlaceholder)
 
@@ -102,6 +103,22 @@ extension ProfileEditNicknameViewController: ProfileEditNicknameDisplayLogic {
     func displayNicknameValidity(_ validity: InputField.Validity) {
         nicknameInput.updateValidity(validity)
         nextButton.isEnabled = validity == .valid || nicknameInput.text.isEmpty == false
+    }
+}
+
+// MARK: - InputDelegate
+
+extension ProfileEditNicknameViewController: InputDelegate {
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
+        // Note: 띄워쓰기 금지
+        if string.contains(" ") {
+            return false
+        }
+        return true
     }
 }
 
