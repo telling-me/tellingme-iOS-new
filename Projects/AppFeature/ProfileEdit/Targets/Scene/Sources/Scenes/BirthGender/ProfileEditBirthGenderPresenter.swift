@@ -29,6 +29,9 @@ final class ProfileEditBirthGenderPresenter {
 extension ProfileEditBirthGenderPresenter: ProfileEditBirthGenderPresentationLogic {
     func presentBirthGender(birth: Int?, gender: EditingProfile.Gender?) {
         viewController?.displayBirthGender(birth: birth.map { "\($0)" }, gender: gender)
+
+        let isNextButtonEnabled = birth != nil && gender != nil
+        viewController?.displayNextButton(isEnabled: isNextButtonEnabled)
     }
 
     func presentBirthValidity(errorType: ProfileEditBirthGender.BirthErrorType?) {

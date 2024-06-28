@@ -24,18 +24,6 @@ public final class SelectBox: UIView {
     private var inputField: InputField? = nil
 
     private let didTapSubject = PassthroughSubject<Void, Never>()
-    var didTapPublisher: AnyPublisher<Void, Never> {
-        didTapSubject.eraseToAnyPublisher()
-    }
-
-    private let didTapInputSubject = PassthroughSubject<Void, Never>()
-    var didTapInputPublisher: AnyPublisher<Void, Never> {
-        didTapInputSubject.eraseToAnyPublisher()
-    }
-
-    var inputPublisher: AnyPublisher<String, Never>? {
-        inputField?.textPublisher
-    }
 
     private var attributes: Attributes {
         didSet {
@@ -71,6 +59,14 @@ public final class SelectBox: UIView {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    @discardableResult public override func becomeFirstResponder() -> Bool {
+        return inputField?.becomeFirstResponder() ?? super.becomeFirstResponder()
+    }
+
+    @discardableResult public override func resignFirstResponder() -> Bool {
+        return inputField?.resignFirstResponder() ?? super.resignFirstResponder()
     }
 
     @objc private func didTapSelectBox() {
@@ -195,18 +191,24 @@ extension SelectBox {
         inputField.isHidden = shouldHide
 
         self.layoutIfNeeded()
-
-        if shouldHide {
-            inputField.resignFirstResponder()
-        } else {
-            inputField.becomeFirstResponder()
-        }
     }
 }
 
 // MARK: - Interface
 
 extension SelectBox {
+    var didTapPublisher: AnyPublisher<Void, Never> {
+        didTapSubject.eraseToAnyPublisher()
+    }
+
+    var inputPublisher: AnyPublisher<String, Never>? {
+        inputField?.textPublisher
+    }
+
+    var inputText: String? {
+        inputField?.text
+    }
+
     func updateIsSelected(_ isSelected: Bool) {
         self.attributes = attributes.withIsSelected(isSelected)
     }

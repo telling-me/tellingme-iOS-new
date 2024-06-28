@@ -99,12 +99,14 @@ final class ProfileEditJobViewController: ProfileEditViewController {
                 .sink { [weak self] in self?.didTapSelectBox(selectBox, index: index) }
                 .store(in: &cancellables)
 
+            selectBox.inputPublisher?
+                .sink { [weak self] in self?.interactor?.storeJob(selectedJob: .기타, etc: $0) }
+                .store(in: &cancellables)
+
             stackView.addArrangedSubview(selectBox)
         }
 
         nextButton.do {
-            $0.isEnabled = true
-
             view.addSubview($0)
             $0.snp.makeConstraints { make in
                 buttonBottomInsetConstraint = make.bottom
@@ -119,12 +121,22 @@ final class ProfileEditJobViewController: ProfileEditViewController {
             }
         }
     }
+
     // MARK: - Action
 
     private func didTapSelectBox(_ selectBox: SelectBox, index: Int) {
+        let selectedJob = jobs[index]
+        let etc = selectBox.inputText
+        interactor?.storeJob(selectedJob: selectedJob, etc: etc)
+
         resetSelectBoxes()
         selectBox.updateIsSelected(true)
-        // TODO: - 데이터 업데이트
+        
+        if selectedJob == .기타 {
+            selectBox.becomeFirstResponder()
+        } else {
+            view.endEditing(true)
+        }
     }
 
     private func resetSelectBoxes() {
