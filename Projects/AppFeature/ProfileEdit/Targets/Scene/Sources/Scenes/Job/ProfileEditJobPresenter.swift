@@ -52,7 +52,7 @@ private extension EditingProfile.Job {
         case .대학생:
             return .대학생
         case .취업준비생:
-            return .중고등학생
+            return .취업준비생
         case .직장인:
             return .직장인
         case .주부:

@@ -25,7 +25,7 @@ final class ProfileEditJobViewController: ProfileEditViewController {
     var router: (any ProfileEditJobRoutingLogic)?
     var coordinator: (any ProfileEditJobSceneCoordinator)?
 
-    private var jobs: [ProfileEditJob.Job] = ProfileEditJob.Job.allCases
+    private let jobs: [ProfileEditJob.Job] = ProfileEditJob.Job.allCases
 
     // MARK: - UI
 
@@ -97,7 +97,6 @@ final class ProfileEditJobViewController: ProfileEditViewController {
             stackView.addArrangedSubview(selectBox)
         }
 
-
         nextButton.setTapHandler { [weak self] in
             self?.coordinator?.next()
         }
@@ -109,9 +108,6 @@ final class ProfileEditJobViewController: ProfileEditViewController {
         let selectedJob = jobs[index]
         let etc = selectBox.inputText
         interactor?.storeJob(selectedJob: selectedJob, etc: etc)
-
-        resetSelectBoxes()
-        selectBox.updateIsSelected(true)
         
         if selectedJob == .기타 {
             selectBox.becomeFirstResponder()
@@ -119,30 +115,33 @@ final class ProfileEditJobViewController: ProfileEditViewController {
             view.endEditing(true)
         }
     }
-
-    private func resetSelectBoxes() {
-        stackView.arrangedSubviews
-            .compactMap { $0 as? SelectBox }
-            .forEach { $0.updateIsSelected(false) }
-    }
 }
 
 // MARK: - Display Logic
 
 extension ProfileEditJobViewController: ProfileEditJobDisplayLogic {
     func displayJob(selectedIndex: Int?, etc: String?, isNextButtonEnabled: Bool) {
-        guard let selectedIndex else { return }
+        guard let selectedIndex, selectedIndex < selectBoxes.count
+        else { return }
 
-        stackView.arrangedSubviews
-            .compactMap { $0 as? SelectBox }
-            .enumerated()
-            .filter { $0.offset == selectedIndex }
-            .forEach {
-                $0.element.updateIsSelected(true)
-                $0.element.updateInput(etc ?? "")
-            }
+        resetSelectBoxes()
+        
+        let selectedSelectBox = selectBoxes[selectedIndex]
+        selectedSelectBox.updateIsSelected(true)
+        selectedSelectBox.updateInput(etc ?? "")
 
         nextButton.isEnabled = isNextButtonEnabled
+    }
+}
+
+extension ProfileEditJobViewController {
+    private func resetSelectBoxes() {
+        selectBoxes.forEach { $0.updateIsSelected(false) }
+    }
+
+    private var selectBoxes: [SelectBox] {
+        stackView.arrangedSubviews
+            .compactMap { $0 as? SelectBox }
     }
 }
 
