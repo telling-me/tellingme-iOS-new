@@ -25,7 +25,7 @@ extension EditingProfile {
         public var birth: Int?
         public var gender: Gender?
         public var job: Job?
-        public var worry: Worry?
+        public var worryList: [Worry] = []
     }
 
     public enum Gender {
