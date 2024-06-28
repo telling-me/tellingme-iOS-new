@@ -16,64 +16,177 @@ import SharedKit
 
 protocol ProfileEditBirthGenderSceneCoordinator: ProfileEditSceneCoordinator {}
 
-protocol ProfileEditBirthGenderDisplayLogic: AnyObject {}
+protocol ProfileEditBirthGenderDisplayLogic: AnyObject {
+    func displayBirthGender(birth: String?, gender: EditingProfile.Gender?)
+    func displayBirthValidity(_ validity: InputField.Validity)
+    func displayNextButton(isEnabled: Bool)
+}
 
-final class ProfileEditBirthGenderViewController: UIViewController {
+final class ProfileEditBirthGenderViewController: ProfileEditViewController {
     var interactor: (any ProfileEditBirthGenderBusinessLogic)?
     var router: (any ProfileEditBirthGenderRoutingLogic)?
     var coordinator: (any ProfileEditBirthGenderSceneCoordinator)?
 
     // MARK: - UI
-    
+
+    private let birthInput = InputField()
+    private let genderStackView = UIStackView()
+    private let maleSelectBox = SelectBox(text: "남성")
+    private let femaleSelectBox = SelectBox(text: "여성")
+
+    private var buttonBottomInsetConstraint: Constraint?
+
     // MARK: - View Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.coordinator?.setNavigationItems()
-        self.setUI()
+
+        coordinator?.setNavigationItems()
     }
-}
 
-// MARK: - Set up
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 
-extension ProfileEditBirthGenderViewController {
-    private func setUI() {
-        view.backgroundColor = .white
+        interactor?.loadIfNeeded()
+    }
 
-        UILabel()
-            .do {
-                $0.setText(text: "생일/성별 화면", style: .body_01_B)
-                view.addSubview($0)
-                $0.snp.makeConstraints { make in
-                    make.center.equalToSuperview()
-                }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        birthInput.becomeFirstResponder()
+    }
+
+    // MARK: - Set up
+
+    override func setupUI() {
+        super.setupUI()
+
+        headerView.configure(content: .birthGender)
+
+        birthInput.do {
+            $0.updateKeyboardType(.numberPad)
+            $0.setMaxCount(Const.birthMaxCount)
+            $0.updatePlaceholder(Const.birthPlaceholder)
+
+            contentView.addSubview($0)
+            $0.snp.makeConstraints { make in
+                make.top.equalTo(headerView.snp.bottom).offset(Const.birthInputTopSpacing)
+                make.directionalHorizontalEdges.equalToSuperview().inset(horizontalInsets)
             }
+        }
 
-        BoxButton(text: "다음", attributes: .primaryLarge)
-            .do {
-                view.addSubview($0)
-                $0.snp.makeConstraints { make in
-                    make.centerX.equalToSuperview()
-                    make.centerY.equalToSuperview().offset(100)
-                }
+        nextButton.setTapHandler { [weak self] in
+            self?.coordinator?.next()
+        }
 
-                $0.setTapHandler { [weak self] in
-                    guard let self else { return }
+        genderStackView.do {
+            $0.axis = .horizontal
+            $0.spacing = 11
+            $0.alignment = .center
+            $0.distribution = .fillEqually
 
-                    self.coordinator?.next()
-                }
+            contentView.addSubview($0)
+            $0.snp.makeConstraints { make in
+                make.top.equalTo(headerView.snp.bottom).offset(Const.headerViewSelectViewSpacing)
+                make.directionalHorizontalEdges.equalToSuperview().inset(horizontalInsets)
             }
+        }
+
+        maleSelectBox.do {
+            $0.didTapPublisher
+                .sink { [weak self] in self?.didTapMaleSelectBox() }
+                .store(in: &cancellables)
+
+            genderStackView.addArrangedSubview($0)
+        }
+
+        femaleSelectBox.do {
+            $0.didTapPublisher
+                .sink { [weak self] in self?.didTapFemaleSelectBox() }
+                .store(in: &cancellables)
+
+            genderStackView.addArrangedSubview($0)
+        }
+    }
+
+    // MARK: - Bind
+
+    override func bind() {
+        super.bind()
+
+        birthInput.editingDidEndPublisher
+            .removeDuplicates()
+            .sink { [weak self] in self?.interactor?.verifyBirth($0) }
+            .store(in: &cancellables)
+
+        birthInput.textPublisher
+            .removeDuplicates()
+            .sink { [weak self] in self?.interactor?.verifyBirth($0) }
+            .store(in: &cancellables)
+    }
+
+    // MARK: - Action
+
+    @objc private func didTapMaleSelectBox() {
+        resetSelectBox()
+        interactor?.selectGender(.male)
+        maleSelectBox.updateIsSelected(true)
+    }
+
+    @objc private func didTapFemaleSelectBox() {
+        resetSelectBox()
+        interactor?.selectGender(.female)
+        femaleSelectBox.updateIsSelected(true)
+    }
+
+    private func resetSelectBox() {
+        maleSelectBox.updateIsSelected(false)
+        femaleSelectBox.updateIsSelected(false)
     }
 }
 
 // MARK: - Display Logic
 
 extension ProfileEditBirthGenderViewController: ProfileEditBirthGenderDisplayLogic {
-    
+    func displayBirthGender(birth: String?, gender: EditingProfile.Gender?) {
+        if let birth {
+            birthInput.setText(birth)
+        }
+        
+        if let gender {
+            resetSelectBox()
+            
+            switch gender {
+            case .male:
+                maleSelectBox.updateIsSelected(true)
+            case .female:
+                femaleSelectBox.updateIsSelected(true)
+            }
+        }
+    }
+
+    func displayBirthValidity(_ validity: InputField.Validity) {
+        birthInput.updateValidity(validity)
+    }
+
+    func displayNextButton(isEnabled: Bool) {
+        nextButton.isEnabled = isEnabled && birthInput.text.count == 4
+    }
 }
 
 // MARK: - Scene
 
-extension ProfileEditBirthGenderViewController: ProfileEditBirthGenderScene {
-    
+extension ProfileEditBirthGenderViewController: ProfileEditBirthGenderScene {}
+
+
+// MARK: - Const
+
+extension ProfileEditBirthGenderViewController {
+    private enum Const {
+        static let birthMaxCount = 4
+        static let birthPlaceholder = "출생연도 \(birthMaxCount)자리"
+
+        static let birthInputTopSpacing = 55.0
+        static let headerViewSelectViewSpacing = 135.0
+    }
 }
