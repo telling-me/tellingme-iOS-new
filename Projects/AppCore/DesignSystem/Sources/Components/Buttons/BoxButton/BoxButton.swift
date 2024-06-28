@@ -46,6 +46,11 @@ public final class BoxButton: BaseButton {
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    public func setText(_ text: String?) {
+        self.text = text
+        configure()
+    }
 }
 
 // MARK: - Configure
