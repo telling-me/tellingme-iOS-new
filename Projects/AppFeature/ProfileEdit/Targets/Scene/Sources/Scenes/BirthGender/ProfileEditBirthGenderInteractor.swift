@@ -43,7 +43,6 @@ final class ProfileEditBirthGenderInteractor: ProfileEditBirthGenderBusinessLogi
 extension ProfileEditBirthGenderInteractor {
     func loadIfNeeded() {
         let profile = externalDataStore.editingProfile?.profileInfo
-        print("###", profile)
         presenter.presentBirthGender(birth: profile?.birth, gender: profile?.gender)
     }
 
@@ -65,7 +64,6 @@ extension ProfileEditBirthGenderInteractor {
         }
 
         if errorType == nil {
-            print("### store", birth)
             externalDataStore.editingProfile?.profileInfo.birth = birth
         } else {
             externalDataStore.editingProfile?.profileInfo.birth = nil

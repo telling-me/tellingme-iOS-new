@@ -21,8 +21,6 @@ protocol ProfileEditNicknameDisplayLogic: AnyObject {
 }
 
 final class ProfileEditNicknameViewController: ProfileEditViewController {
-    private var cancellables = Set<AnyCancellable>()
-
     var interactor: (any ProfileEditNicknameBusinessLogic)?
     var router: (any ProfileEditNicknameRoutingLogic)?
     var coordinator: (any ProfileEditNicknameSceneCoordinator)?
@@ -46,13 +44,21 @@ final class ProfileEditNicknameViewController: ProfileEditViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        bind()
+        nicknameInput.becomeFirstResponder()
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
 
-        cancellables.removeAll()
+    override func bind() {
+        super.bind()
+
+        nicknameInput.editingDidEndPublisher
+            .removeDuplicates()
+            .sink { [weak self] in self?.interactor?.verifyNickname($0) }
+            .store(in: &cancellables)
+
+        nicknameInput.textPublisher
+            .removeDuplicates()
+            .sink { [weak self] in self?.interactor?.verifyNickname($0) }
+            .store(in: &cancellables)
     }
 }
 
@@ -61,6 +67,22 @@ final class ProfileEditNicknameViewController: ProfileEditViewController {
 extension ProfileEditNicknameViewController {
     private func setUI() {
         configureHeader(content: .nickname)
+     
+        configureKeyboardAnimation { [weak self] duration, curve, height in
+            guard let self else { return }
+
+            let buttonBottomInset = height == .zero ? buttonBottomInset : -buttonBottomInset
+            let inset = height + buttonBottomInset
+            buttonBottomInsetConstraint?.update(inset: inset)
+
+            UIViewPropertyAnimator(
+                duration: duration,
+                curve: curve,
+                animations: { self.view.layoutIfNeeded() }
+            )
+            .startAnimation()
+        }
+
 
         nicknameInput.do {
             $0.setMaxCount(Const.nicknameMaxCount)
@@ -74,7 +96,7 @@ extension ProfileEditNicknameViewController {
         }
 
         nextButton.do {
-            $0.isEnabled = true
+            $0.isEnabled = false
 
             view.addSubview($0)
             $0.snp.makeConstraints { make in
@@ -90,43 +112,6 @@ extension ProfileEditNicknameViewController {
             }
         }
     }
-
-    private func bind() {
-        Publishers.Merge(
-            NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification),
-            NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
-        )
-        .sink { [weak self] in self?.animateButton(notification: $0) }
-        .store(in: &cancellables)
-
-        nicknameInput.editingDidEndPublisher
-            .removeDuplicates()
-            .sink { [weak self] in self?.interactor?.verifyNickname($0) }
-            .store(in: &cancellables)
-
-        nicknameInput.textPublisher
-            .removeDuplicates()
-            .sink { [weak self] in self?.interactor?.verifyNickname($0) }
-            .store(in: &cancellables)
-    }
-}
-
-extension ProfileEditNicknameViewController {
-    private func animateButton(notification: Notification) {
-        guard let (duration, curve, height) = getAnimationProperties(notification: notification) else { return }
-
-        let buttonBottomInset = height == .zero ? buttonBottomInset : -buttonBottomInset
-        let inset = height + buttonBottomInset
-        buttonBottomInsetConstraint?.update(inset: inset)
-
-        UIViewPropertyAnimator(
-            duration: duration,
-            curve: curve,
-            animations: { self.view.layoutIfNeeded() }
-        )
-        .startAnimation()
-    }
-
 }
 
 // MARK: - Display Logic

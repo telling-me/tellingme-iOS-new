@@ -15,14 +15,42 @@ import AppCore_DesignSystem
 import SharedKit
 
 class ProfileEditViewController: UIViewController {
+    var cancellables = Set<AnyCancellable>()
+
     let scrollView = UIScrollView()
     let contentView = UIView()
     let headerView = HeaderView()
+
+    private var keyboardAnimationHandler: KeyboardAnimationHandler?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupUI()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        bind()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        view.endEditing(true)
+    }
+
+    func bind() {
+        NotificationCenter.default
+            .publisher(for: UIResponder.keyboardWillHideNotification)
+            .sink { [weak self] in self?.animateButton(notification: $0) }
+            .store(in: &cancellables)
+
+        NotificationCenter.default
+            .publisher(for: UIResponder.keyboardWillShowNotification)
+            .sink { [weak self] in self?.animateButton(notification: $0) }
+            .store(in: &cancellables)
     }
 }
 
@@ -62,11 +90,29 @@ extension ProfileEditViewController {
     }
 }
 
-// MARK: - Configure
+// MARK: - Interface
 
 extension ProfileEditViewController {
     func configureHeader(content: HeaderView.Content) {
         headerView.configure(content: content)
+    }
+
+    typealias KeyboardAnimationTuple = (Double, UIView.AnimationCurve, CGFloat)
+    typealias KeyboardAnimationHandler = (KeyboardAnimationTuple) -> Void
+
+    func configureKeyboardAnimation(_ animationHandler: @escaping KeyboardAnimationHandler) {
+        self.keyboardAnimationHandler = animationHandler
+    }
+}
+
+// MARK: - Keyboard animation
+
+extension ProfileEditViewController {
+    private func animateButton(notification: Notification) {
+        guard let (duration, curve, height) = getAnimationProperties(notification: notification)
+        else { return }
+
+        keyboardAnimationHandler?((duration, curve, height))
     }
 
     func getAnimationProperties(notification: Notification) -> (Double, UIView.AnimationCurve, CGFloat)? {

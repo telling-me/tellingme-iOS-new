@@ -23,8 +23,6 @@ protocol ProfileEditBirthGenderDisplayLogic: AnyObject {
 }
 
 final class ProfileEditBirthGenderViewController: ProfileEditViewController {
-    private var cancellables = Set<AnyCancellable>()
-
     var interactor: (any ProfileEditBirthGenderBusinessLogic)?
     var router: (any ProfileEditBirthGenderRoutingLogic)?
     var coordinator: (any ProfileEditBirthGenderSceneCoordinator)?
@@ -52,20 +50,28 @@ final class ProfileEditBirthGenderViewController: ProfileEditViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         interactor?.loadIfNeeded()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        bind()
+        birthInput.becomeFirstResponder()
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func bind() {
+        super.bind()
 
-        cancellables.removeAll()
+        birthInput.editingDidEndPublisher
+            .removeDuplicates()
+            .sink { [weak self] in self?.interactor?.verifyBirth($0) }
+            .store(in: &cancellables)
+
+        birthInput.textPublisher
+            .removeDuplicates()
+            .sink { [weak self] in self?.interactor?.verifyBirth($0) }
+            .store(in: &cancellables)
     }
 
     @objc private func didTapMaleSelectBox() {
@@ -91,6 +97,20 @@ final class ProfileEditBirthGenderViewController: ProfileEditViewController {
 extension ProfileEditBirthGenderViewController {
     private func setUI() {
         configureHeader(content: .birthGender)
+        configureKeyboardAnimation { [weak self] duration, curve, height in
+            guard let self else { return }
+
+            let buttonBottomInset = height == .zero ? buttonBottomInset : -buttonBottomInset
+            let inset = height + buttonBottomInset
+            buttonBottomInsetConstraint?.update(inset: inset)
+
+            UIViewPropertyAnimator(
+                duration: duration,
+                curve: curve,
+                animations: { self.view.layoutIfNeeded() }
+            )
+            .startAnimation()
+        }
 
         birthInput.do {
             $0.updateKeyboardType(.numberPad)
@@ -150,42 +170,6 @@ extension ProfileEditBirthGenderViewController {
             genderStackView.addArrangedSubview($0)
         }
     }
-
-    private func bind() {
-        Publishers.Merge(
-            NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification),
-            NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
-        )
-        .sink { [weak self] in self?.animateButton(notification: $0) }
-        .store(in: &cancellables)
-
-        birthInput.editingDidEndPublisher
-            .removeDuplicates()
-            .sink { [weak self] in self?.interactor?.verifyBirth($0) }
-            .store(in: &cancellables)
-
-        birthInput.textPublisher
-            .removeDuplicates()
-            .sink { [weak self] in self?.interactor?.verifyBirth($0) }
-            .store(in: &cancellables)
-    }
-}
-
-extension ProfileEditBirthGenderViewController {
-    private func animateButton(notification: Notification) {
-        guard let (duration, curve, height) = getAnimationProperties(notification: notification) else { return }
-
-        let buttonBottomInset = height == .zero ? buttonBottomInset : -buttonBottomInset
-        let inset = height + buttonBottomInset
-        buttonBottomInsetConstraint?.update(inset: inset)
-
-        UIViewPropertyAnimator(
-            duration: duration,
-            curve: curve,
-            animations: { self.view.layoutIfNeeded() }
-        )
-        .startAnimation()
-    }
 }
 
 // MARK: - Display Logic
@@ -206,8 +190,6 @@ extension ProfileEditBirthGenderViewController: ProfileEditBirthGenderDisplayLog
                 femaleSelectBox.updateIsSelected(true)
             }
         }
-
-        nextButton.isEnabled = true
     }
 
     func displayBirthValidity(_ validity: InputField.Validity) {
@@ -215,7 +197,7 @@ extension ProfileEditBirthGenderViewController: ProfileEditBirthGenderDisplayLog
     }
 
     func displayNextButton(isEnabled: Bool) {
-        nextButton.isEnabled = isEnabled
+        nextButton.isEnabled = isEnabled && birthInput.text.count == 4
     }
 }
 

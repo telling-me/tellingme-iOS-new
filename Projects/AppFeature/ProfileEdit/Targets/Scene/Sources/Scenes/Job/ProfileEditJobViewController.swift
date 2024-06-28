@@ -19,8 +19,6 @@ protocol ProfileEditJobSceneCoordinator: ProfileEditSceneCoordinator {}
 protocol ProfileEditJobDisplayLogic: AnyObject {}
 
 final class ProfileEditJobViewController: ProfileEditViewController {
-    private var cancellables = Set<AnyCancellable>()
-
     var interactor: (any ProfileEditJobBusinessLogic)?
     var router: (any ProfileEditJobRoutingLogic)?
     var coordinator: (any ProfileEditJobSceneCoordinator)?
@@ -48,12 +46,6 @@ final class ProfileEditJobViewController: ProfileEditViewController {
         bind()
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        cancellables.removeAll()
-    }
-
     // MARK: - Action
 
     private func didTapSelectBox(_ selectBox: SelectBox, index: Int) {
@@ -74,6 +66,24 @@ final class ProfileEditJobViewController: ProfileEditViewController {
 extension ProfileEditJobViewController {
     private func setUI() {
         configureHeader(content: .job)
+
+        configureKeyboardAnimation { [weak self] (duration, curve, height) in
+            guard let self else { return }
+
+            let buttonBottomInset = height == .zero ? buttonBottomInset : -buttonBottomInset
+            let inset = height + buttonBottomInset
+            buttonBottomInsetConstraint?.update(inset: inset)
+
+            UIViewPropertyAnimator(
+                duration: duration,
+                curve: curve,
+                animations: { self.view.layoutIfNeeded() }
+            )
+            .startAnimation()
+
+            scrollView.setContentOffset(.init(x: .zero, y: 260), animated: true)
+            scrollView.contentInset.bottom = inset
+        }
 
         stackView.do {
             $0.axis = .vertical
@@ -120,36 +130,6 @@ extension ProfileEditJobViewController {
                 self?.coordinator?.next()
             }
         }
-
-    }
-
-    private func bind() {
-        Publishers.Merge(
-            NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification),
-            NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
-        )
-        .sink { [weak self] in self?.animate(notification: $0) }
-        .store(in: &cancellables)
-    }
-}
-
-extension ProfileEditJobViewController {
-    private func animate(notification: Notification) {
-        guard let (duration, curve, height) = getAnimationProperties(notification: notification) else { return }
-
-        let buttonBottomInset = height == .zero ? buttonBottomInset : -buttonBottomInset
-        let inset = height + buttonBottomInset
-        buttonBottomInsetConstraint?.update(inset: inset)
-
-        UIViewPropertyAnimator(
-            duration: duration,
-            curve: curve,
-            animations: { self.view.layoutIfNeeded() }
-        )
-        .startAnimation()
-
-        scrollView.setContentOffset(.init(x: .zero, y: 260), animated: true)
-        scrollView.contentInset.bottom = inset
     }
 }
 
