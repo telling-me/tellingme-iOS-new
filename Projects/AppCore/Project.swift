@@ -51,6 +51,7 @@ let project = Project.make(
       sources: ["DesignSystem/Sources/**"],
       resources: ["DesignSystem/Resources/**"],
       dependencies: [
+        .project(target: "SharedKit", path: "../Shared", condition: .when(.all)),
         .external(name: "SnapKit", condition: .when(.all)),
         .external(name: "Then", condition: .when(.all))
       ]
