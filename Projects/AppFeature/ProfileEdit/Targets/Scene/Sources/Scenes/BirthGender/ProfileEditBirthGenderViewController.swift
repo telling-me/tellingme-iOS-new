@@ -34,9 +34,6 @@ final class ProfileEditBirthGenderViewController: ProfileEditViewController {
     private let maleSelectBox = SelectBox(text: "남성")
     private let femaleSelectBox = SelectBox(text: "여성")
 
-    // TODO: 공통화 작업 필요
-    private let nextButton = BoxButton(text: "다음", attributes: .primaryLarge)
-    
     private var buttonBottomInsetConstraint: Constraint?
 
     // MARK: - View Lifecycle
@@ -64,21 +61,7 @@ final class ProfileEditBirthGenderViewController: ProfileEditViewController {
     override func setupUI() {
         super.setupUI()
 
-        configureHeader(content: .birthGender)
-        configureKeyboardAnimation { [weak self] duration, curve, height in
-            guard let self else { return }
-
-            let buttonBottomInset = height == .zero ? buttonBottomInset : -buttonBottomInset
-            let inset = height + buttonBottomInset
-            buttonBottomInsetConstraint?.update(inset: inset)
-
-            UIViewPropertyAnimator(
-                duration: duration,
-                curve: curve,
-                animations: { self.view.layoutIfNeeded() }
-            )
-            .startAnimation()
-        }
+        headerView.configure(content: .birthGender)
 
         birthInput.do {
             $0.updateKeyboardType(.numberPad)
@@ -92,21 +75,8 @@ final class ProfileEditBirthGenderViewController: ProfileEditViewController {
             }
         }
 
-        nextButton.do {
-            $0.isEnabled = false
-
-            view.addSubview($0)
-            $0.snp.makeConstraints { make in
-                buttonBottomInsetConstraint = make.bottom
-                    .equalTo(view.safeAreaLayoutGuide)
-                    .inset(buttonBottomInset)
-                    .constraint
-                make.directionalHorizontalEdges.equalToSuperview().inset(horizontalInsets)
-            }
-
-            $0.setTapHandler { [weak self] in
-                self?.coordinator?.next()
-            }
+        nextButton.setTapHandler { [weak self] in
+            self?.coordinator?.next()
         }
 
         genderStackView.do {

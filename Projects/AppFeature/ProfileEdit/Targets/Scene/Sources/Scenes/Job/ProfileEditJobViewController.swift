@@ -30,9 +30,6 @@ final class ProfileEditJobViewController: ProfileEditViewController {
     // MARK: - UI
 
     private let stackView = UIStackView()
-    private let nextButton = BoxButton(text: "다음", attributes: .primaryLarge)
-
-    private var buttonBottomInsetConstraint: Constraint?
 
     // MARK: - View Lifecycle
     
@@ -53,24 +50,18 @@ final class ProfileEditJobViewController: ProfileEditViewController {
     override func setupUI() {
         super.setupUI()
 
-        configureHeader(content: .job)
+        headerView.configure(content: .job)
 
-        configureKeyboardAnimation { [weak self] (duration, curve, height) in
+        configureKeyboardAnimation { [weak self] (_, _, height) in
             guard let self else { return }
 
-            let buttonBottomInset = height == .zero ? buttonBottomInset : -buttonBottomInset
-            let inset = height + buttonBottomInset
-            buttonBottomInsetConstraint?.update(inset: inset)
+            let willShow = height != .zero
 
-            UIViewPropertyAnimator(
-                duration: duration,
-                curve: curve,
-                animations: { self.view.layoutIfNeeded() }
+            scrollView.setContentOffset(
+                .init(x: .zero, y: willShow ? 260 : .zero),
+                animated: true
             )
-            .startAnimation()
-
-            scrollView.setContentOffset(.init(x: .zero, y: 260), animated: true)
-            scrollView.contentInset.bottom = inset
+            scrollView.contentInset.bottom = height + buttonBottomInset
         }
 
         stackView.do {
@@ -106,19 +97,9 @@ final class ProfileEditJobViewController: ProfileEditViewController {
             stackView.addArrangedSubview(selectBox)
         }
 
-        nextButton.do {
-            view.addSubview($0)
-            $0.snp.makeConstraints { make in
-                buttonBottomInsetConstraint = make.bottom
-                    .equalTo(view.safeAreaLayoutGuide)
-                    .inset(buttonBottomInset)
-                    .constraint
-                make.directionalHorizontalEdges.equalToSuperview().inset(horizontalInsets)
-            }
 
-            $0.setTapHandler { [weak self] in
-                self?.coordinator?.next()
-            }
+        nextButton.setTapHandler { [weak self] in
+            self?.coordinator?.next()
         }
     }
 

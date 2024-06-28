@@ -17,11 +17,13 @@ import SharedKit
 class ProfileEditViewController: UIViewController {
     var cancellables = Set<AnyCancellable>()
 
-    let scrollView = UIScrollView()
-    let contentView = UIView()
-    let headerView = HeaderView()
+    private(set) var scrollView = UIScrollView()
+    private(set) var contentView = UIView()
+    private(set) var headerView = HeaderView()
+    private(set) var nextButton = BoxButton(text: "다음", attributes: .primaryLarge)
 
     private var keyboardAnimationHandler: KeyboardAnimationHandler?
+    private var buttonBottomInsetConstraint: Constraint?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,6 +73,17 @@ class ProfileEditViewController: UIViewController {
                 make.directionalHorizontalEdges.equalToSuperview().inset(Const.contentInsets)
             }
         }
+
+        nextButton.do {
+            view.addSubview($0)
+            $0.snp.makeConstraints { make in
+                buttonBottomInsetConstraint = make.bottom
+                    .equalTo(view.safeAreaLayoutGuide)
+                    .inset(buttonBottomInset)
+                    .constraint
+                make.directionalHorizontalEdges.equalToSuperview().inset(horizontalInsets)
+            }
+        }
     }
 
     func bind() {
@@ -83,14 +96,6 @@ class ProfileEditViewController: UIViewController {
             .publisher(for: UIResponder.keyboardWillShowNotification)
             .sink { [weak self] in self?.animateButton(notification: $0) }
             .store(in: &cancellables)
-    }
-}
-
-// MARK: - Header
-
-extension ProfileEditViewController {
-    func configureHeader(content: HeaderView.Content) {
-        headerView.configure(content: content)
     }
 }
 
@@ -107,6 +112,17 @@ extension ProfileEditViewController {
     private func animateButton(notification: Notification) {
         guard let (duration, curve, height) = getAnimationProperties(notification: notification)
         else { return }
+
+        let buttonBottomInset = height == .zero ? buttonBottomInset : -buttonBottomInset
+        let inset = height + buttonBottomInset
+        buttonBottomInsetConstraint?.update(inset: inset)
+
+        UIViewPropertyAnimator(
+            duration: duration,
+            curve: curve,
+            animations: { self.view.layoutIfNeeded() }
+        )
+        .startAnimation()
 
         keyboardAnimationHandler?((duration, curve, height))
     }

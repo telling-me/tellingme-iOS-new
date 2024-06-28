@@ -29,41 +29,16 @@ final class ProfileEditWorryViewController: ProfileEditViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         self.coordinator?.setNavigationItems()
-        self.setUI()
     }
-}
 
-// MARK: - Set up
+    // MARK: - Set up
 
-extension ProfileEditWorryViewController {
-    private func setUI() {
-        configureHeader(content: .worry)
+    override func setupUI() {
+        super.setupUI()
 
-        UILabel()
-            .do {
-                $0.setText(text: "고민 화면", style: .body_01_B)
-
-                contentView.addSubview($0)
-                $0.snp.makeConstraints { make in
-                    make.center.equalToSuperview()
-                }
-            }
-
-        BoxButton(text: "완료", attributes: .primaryLarge)
-            .do {
-                contentView.addSubview($0)
-                $0.snp.makeConstraints { make in
-                    make.centerX.equalToSuperview()
-                    make.centerY.equalToSuperview().offset(100)
-                }
-
-                $0.setTapHandler { [weak self] in
-                    guard let self else { return }
-
-                    self.coordinator?.next()
-                }
-            }
+        headerView.configure(content: .worry)
     }
 }
 

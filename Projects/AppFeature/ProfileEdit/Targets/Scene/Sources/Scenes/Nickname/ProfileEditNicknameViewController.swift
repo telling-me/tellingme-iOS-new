@@ -28,7 +28,6 @@ final class ProfileEditNicknameViewController: ProfileEditViewController {
     // MARK: - UI
 
     private let nicknameInput = InputField()
-    private let nextButton = BoxButton(text: "다음", attributes: .primaryLarge)
 
     private var buttonBottomInsetConstraint: Constraint?
 
@@ -50,23 +49,8 @@ final class ProfileEditNicknameViewController: ProfileEditViewController {
 
     override func setupUI() {
         super.setupUI()
-        configureHeader(content: .nickname)
 
-        configureKeyboardAnimation { [weak self] duration, curve, height in
-            guard let self else { return }
-
-            let buttonBottomInset = height == .zero ? buttonBottomInset : -buttonBottomInset
-            let inset = height + buttonBottomInset
-            buttonBottomInsetConstraint?.update(inset: inset)
-
-            UIViewPropertyAnimator(
-                duration: duration,
-                curve: curve,
-                animations: { self.view.layoutIfNeeded() }
-            )
-            .startAnimation()
-        }
-
+        headerView.configure(content: .nickname)
 
         nicknameInput.do {
             $0.setMaxCount(Const.nicknameMaxCount)
@@ -79,21 +63,8 @@ final class ProfileEditNicknameViewController: ProfileEditViewController {
             }
         }
 
-        nextButton.do {
-            $0.isEnabled = false
-
-            view.addSubview($0)
-            $0.snp.makeConstraints { make in
-                buttonBottomInsetConstraint = make.bottom
-                    .equalTo(view.safeAreaLayoutGuide)
-                    .inset(buttonBottomInset)
-                    .constraint
-                make.directionalHorizontalEdges.equalToSuperview().inset(horizontalInsets)
-            }
-
-            $0.setTapHandler { [weak self] in
-                self?.coordinator?.next()
-            }
+        nextButton.setTapHandler { [weak self] in
+            self?.coordinator?.next()
         }
     }
 
