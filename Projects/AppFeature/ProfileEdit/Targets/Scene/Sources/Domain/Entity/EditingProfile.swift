@@ -22,6 +22,7 @@ extension EditingProfile {
 
 extension EditingProfile {
     public struct ProfileInfo {
+        public var nickname: String?
         public var birth: Int?
         public var gender: Gender?
         public var job: Job?
