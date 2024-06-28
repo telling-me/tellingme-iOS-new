@@ -75,6 +75,8 @@ class ProfileEditViewController: UIViewController {
         }
 
         nextButton.do {
+            $0.isEnabled = false
+
             view.addSubview($0)
             $0.snp.makeConstraints { make in
                 buttonBottomInsetConstraint = make.bottom

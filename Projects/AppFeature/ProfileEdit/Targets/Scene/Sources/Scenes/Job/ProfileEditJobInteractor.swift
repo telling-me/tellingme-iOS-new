@@ -66,5 +66,6 @@ extension ProfileEditJobInteractor {
         }
 
         externalDataStore.editingProfile?.profileInfo.job = job
+        presenter.presentJob(job: job)
     }
 }

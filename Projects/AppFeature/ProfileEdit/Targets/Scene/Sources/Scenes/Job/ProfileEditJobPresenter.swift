@@ -26,10 +26,8 @@ final class ProfileEditJobPresenter {
 
 extension ProfileEditJobPresenter: ProfileEditJobPresentationLogic {
     func presentJob(job: EditingProfile.Job?) {
-        guard let job else { return }
-
         let index = ProfileEditJob.Job.allCases
-            .firstIndex(of: job.toViewModel)
+            .firstIndex(where: { $0 == job?.toViewModel })
 
         var etc: String? = nil
         var isNextButtonEnabled: Bool = true
