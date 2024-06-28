@@ -41,23 +41,7 @@ class ProfileEditViewController: UIViewController {
         view.endEditing(true)
     }
 
-    func bind() {
-        NotificationCenter.default
-            .publisher(for: UIResponder.keyboardWillHideNotification)
-            .sink { [weak self] in self?.animateButton(notification: $0) }
-            .store(in: &cancellables)
-
-        NotificationCenter.default
-            .publisher(for: UIResponder.keyboardWillShowNotification)
-            .sink { [weak self] in self?.animateButton(notification: $0) }
-            .store(in: &cancellables)
-    }
-}
-
-// MARK: - Set up
-
-extension ProfileEditViewController {
-    private func setupUI() {
+    func setupUI() {
         view.backgroundColor = .white
 
         scrollView.do {
@@ -88,26 +72,38 @@ extension ProfileEditViewController {
             }
         }
     }
+
+    func bind() {
+        NotificationCenter.default
+            .publisher(for: UIResponder.keyboardWillHideNotification)
+            .sink { [weak self] in self?.animateButton(notification: $0) }
+            .store(in: &cancellables)
+
+        NotificationCenter.default
+            .publisher(for: UIResponder.keyboardWillShowNotification)
+            .sink { [weak self] in self?.animateButton(notification: $0) }
+            .store(in: &cancellables)
+    }
 }
 
-// MARK: - Interface
+// MARK: - Header
 
 extension ProfileEditViewController {
     func configureHeader(content: HeaderView.Content) {
         headerView.configure(content: content)
-    }
-
-    typealias KeyboardAnimationTuple = (Double, UIView.AnimationCurve, CGFloat)
-    typealias KeyboardAnimationHandler = (KeyboardAnimationTuple) -> Void
-
-    func configureKeyboardAnimation(_ animationHandler: @escaping KeyboardAnimationHandler) {
-        self.keyboardAnimationHandler = animationHandler
     }
 }
 
 // MARK: - Keyboard animation
 
 extension ProfileEditViewController {
+    typealias KeyboardAnimationTuple = (Double, UIView.AnimationCurve, CGFloat)
+    typealias KeyboardAnimationHandler = (KeyboardAnimationTuple) -> Void
+
+    func configureKeyboardAnimation(_ animationHandler: @escaping KeyboardAnimationHandler) {
+        self.keyboardAnimationHandler = animationHandler
+    }
+
     private func animateButton(notification: Notification) {
         guard let (duration, curve, height) = getAnimationProperties(notification: notification)
         else { return }
@@ -115,7 +111,7 @@ extension ProfileEditViewController {
         keyboardAnimationHandler?((duration, curve, height))
     }
 
-    func getAnimationProperties(notification: Notification) -> (Double, UIView.AnimationCurve, CGFloat)? {
+    private func getAnimationProperties(notification: Notification) -> KeyboardAnimationTuple? {
         let willHideNotificationName = UIResponder.keyboardWillHideNotification
         let durationKey = UIResponder.keyboardAnimationDurationUserInfoKey
         let curveKey = UIResponder.keyboardAnimationCurveUserInfoKey

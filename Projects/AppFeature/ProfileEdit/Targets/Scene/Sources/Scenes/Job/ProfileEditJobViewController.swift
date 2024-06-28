@@ -16,7 +16,9 @@ import SharedKit
 
 protocol ProfileEditJobSceneCoordinator: ProfileEditSceneCoordinator {}
 
-protocol ProfileEditJobDisplayLogic: AnyObject {}
+protocol ProfileEditJobDisplayLogic: AnyObject {
+    func displayJob(selectedIndex: Int?, etc: String?)
+}
 
 final class ProfileEditJobViewController: ProfileEditViewController {
     var interactor: (any ProfileEditJobBusinessLogic)?
@@ -36,35 +38,21 @@ final class ProfileEditJobViewController: ProfileEditViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         self.coordinator?.setNavigationItems()
-        self.setUI()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 
-        bind()
+        interactor?.loadIfNeeded()
     }
 
-    // MARK: - Action
+    // MARK: - Set up
 
-    private func didTapSelectBox(_ selectBox: SelectBox, index: Int) {
-        resetSelectBoxes()
-        selectBox.updateIsSelected(true)
-        // TODO: - 데이터 업데이트
-    }
+    override func setupUI() {
+        super.setupUI()
 
-    private func resetSelectBoxes() {
-        stackView.arrangedSubviews
-            .compactMap { $0 as? SelectBox }
-            .forEach { $0.updateIsSelected(false) }
-    }
-}
-
-// MARK: - Set up
-
-extension ProfileEditJobViewController {
-    private func setUI() {
         configureHeader(content: .job)
 
         configureKeyboardAnimation { [weak self] (duration, curve, height) in
@@ -131,18 +119,41 @@ extension ProfileEditJobViewController {
             }
         }
     }
+    // MARK: - Action
+
+    private func didTapSelectBox(_ selectBox: SelectBox, index: Int) {
+        resetSelectBoxes()
+        selectBox.updateIsSelected(true)
+        // TODO: - 데이터 업데이트
+    }
+
+    private func resetSelectBoxes() {
+        stackView.arrangedSubviews
+            .compactMap { $0 as? SelectBox }
+            .forEach { $0.updateIsSelected(false) }
+    }
 }
 
 // MARK: - Display Logic
 
 extension ProfileEditJobViewController: ProfileEditJobDisplayLogic {
-    
+    func displayJob(selectedIndex: Int?, etc: String?) {
+        guard let selectedIndex else { return }
+
+        stackView.arrangedSubviews
+            .compactMap { $0 as? SelectBox }
+            .enumerated()
+            .filter { $0.offset == selectedIndex }
+            .forEach {
+                $0.element.updateIsSelected(true)
+                $0.element.updateInput(etc ?? "")
+            }
+    }
 }
 
 // MARK: - Scene
 
 extension ProfileEditJobViewController: ProfileEditJobScene {
-    
 }
 
 // MARK: - Const

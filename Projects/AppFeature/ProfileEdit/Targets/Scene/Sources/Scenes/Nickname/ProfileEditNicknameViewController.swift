@@ -38,7 +38,6 @@ final class ProfileEditNicknameViewController: ProfileEditViewController {
         super.viewDidLoad()
 
         coordinator?.setNavigationItems()
-        setUI()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -47,27 +46,12 @@ final class ProfileEditNicknameViewController: ProfileEditViewController {
         nicknameInput.becomeFirstResponder()
     }
 
-    override func bind() {
-        super.bind()
+    // MARK: - Set up
 
-        nicknameInput.editingDidEndPublisher
-            .removeDuplicates()
-            .sink { [weak self] in self?.interactor?.verifyNickname($0) }
-            .store(in: &cancellables)
-
-        nicknameInput.textPublisher
-            .removeDuplicates()
-            .sink { [weak self] in self?.interactor?.verifyNickname($0) }
-            .store(in: &cancellables)
-    }
-}
-
-// MARK: - Set up
-
-extension ProfileEditNicknameViewController {
-    private func setUI() {
+    override func setupUI() {
+        super.setupUI()
         configureHeader(content: .nickname)
-     
+
         configureKeyboardAnimation { [weak self] duration, curve, height in
             guard let self else { return }
 
@@ -112,6 +96,22 @@ extension ProfileEditNicknameViewController {
             }
         }
     }
+
+    // MARK: - Bind
+
+    override func bind() {
+        super.bind()
+
+        nicknameInput.editingDidEndPublisher
+            .removeDuplicates()
+            .sink { [weak self] in self?.interactor?.verifyNickname($0) }
+            .store(in: &cancellables)
+
+        nicknameInput.textPublisher
+            .removeDuplicates()
+            .sink { [weak self] in self?.interactor?.verifyNickname($0) }
+            .store(in: &cancellables)
+    }
 }
 
 // MARK: - Display Logic
@@ -125,9 +125,7 @@ extension ProfileEditNicknameViewController: ProfileEditNicknameDisplayLogic {
 
 // MARK: - Scene
 
-extension ProfileEditNicknameViewController: ProfileEditNicknameScene {
-
-}
+extension ProfileEditNicknameViewController: ProfileEditNicknameScene {}
 
 // MARK: - Const
 

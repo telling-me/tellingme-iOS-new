@@ -34,8 +34,6 @@ final class ProfileEditBirthGenderInteractor: ProfileEditBirthGenderBusinessLogi
         self.worker = worker
         self.externalDataStore = externalDataStore
     }
-    
-    // MARK: - DataStore
 }
 
 // MARK: Feature
@@ -78,7 +76,9 @@ extension ProfileEditBirthGenderInteractor {
 
         presenter.presentButton(isEnabled: canGoNext)
     }
+}
 
+extension ProfileEditBirthGenderInteractor {
     private var canGoNext: Bool {
         let profile = externalDataStore.editingProfile?.profileInfo
         

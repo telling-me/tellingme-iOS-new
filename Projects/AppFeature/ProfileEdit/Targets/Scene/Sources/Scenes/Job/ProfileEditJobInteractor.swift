@@ -12,7 +12,9 @@ import Foundation
 import AppCore_Entity
 import SharedKit
 
-protocol ProfileEditJobBusinessLogic {}
+protocol ProfileEditJobBusinessLogic {
+    func loadIfNeeded()
+}
 
 protocol ProfileEditJobDataStore: AnyObject {}
 
@@ -20,6 +22,8 @@ final class ProfileEditJobInteractor: ProfileEditJobBusinessLogic, ProfileEditJo
     private let presenter: ProfileEditJobPresentationLogic
     private let worker: ProfileEditJobWorkerProtocol
     private let externalDataStore: ProfileEditDataStore
+
+    private var etc: String?
 
     init(
         presenter: any ProfileEditJobPresentationLogic,
@@ -37,5 +41,9 @@ final class ProfileEditJobInteractor: ProfileEditJobBusinessLogic, ProfileEditJo
 // MARK: Feature ()
 
 extension ProfileEditJobInteractor {
-    
+    func loadIfNeeded() {
+        let profile = externalDataStore.editingProfile?.profileInfo
+        presenter.presentJob(job: profile?.job)
+    }
+
 }

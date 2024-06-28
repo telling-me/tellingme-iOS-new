@@ -192,16 +192,10 @@ extension SelectBox {
         guard let inputField else { return }
 
         let shouldHide = attributes.isSelected == false
-        let additionalHeight = shouldHide ? 0 : inputField.frame.height
         inputField.isHidden = shouldHide
 
-        UIView.animate(
-            withDuration: 0.2,
-            delay: 0,
-            options: .curveEaseInOut,
-            animations: { self.frame.size.height += additionalHeight }
-        )
-        
+        self.layoutIfNeeded()
+
         if shouldHide {
             inputField.resignFirstResponder()
         } else {
@@ -215,6 +209,10 @@ extension SelectBox {
 extension SelectBox {
     func updateIsSelected(_ isSelected: Bool) {
         self.attributes = attributes.withIsSelected(isSelected)
+    }
+
+    func updateInput(_ inputText: String) {
+        self.inputField?.setText(inputText)
     }
 }
 

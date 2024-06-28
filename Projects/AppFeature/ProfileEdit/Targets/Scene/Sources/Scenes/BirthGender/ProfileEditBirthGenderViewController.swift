@@ -45,7 +45,6 @@ final class ProfileEditBirthGenderViewController: ProfileEditViewController {
         super.viewDidLoad()
 
         coordinator?.setNavigationItems()
-        setUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -60,42 +59,11 @@ final class ProfileEditBirthGenderViewController: ProfileEditViewController {
         birthInput.becomeFirstResponder()
     }
 
-    override func bind() {
-        super.bind()
+    // MARK: - Set up
 
-        birthInput.editingDidEndPublisher
-            .removeDuplicates()
-            .sink { [weak self] in self?.interactor?.verifyBirth($0) }
-            .store(in: &cancellables)
+    override func setupUI() {
+        super.setupUI()
 
-        birthInput.textPublisher
-            .removeDuplicates()
-            .sink { [weak self] in self?.interactor?.verifyBirth($0) }
-            .store(in: &cancellables)
-    }
-
-    @objc private func didTapMaleSelectBox() {
-        resetSelectBox()
-        interactor?.selectGender(.male)
-        maleSelectBox.updateIsSelected(true)
-    }
-
-    @objc private func didTapFemaleSelectBox() {
-        resetSelectBox()
-        interactor?.selectGender(.female)
-        femaleSelectBox.updateIsSelected(true)
-    }
-
-    private func resetSelectBox() {
-        maleSelectBox.updateIsSelected(false)
-        femaleSelectBox.updateIsSelected(false)
-    }
-}
-
-// MARK: - Set up
-
-extension ProfileEditBirthGenderViewController {
-    private func setUI() {
         configureHeader(content: .birthGender)
         configureKeyboardAnimation { [weak self] duration, curve, height in
             guard let self else { return }
@@ -170,6 +138,41 @@ extension ProfileEditBirthGenderViewController {
             genderStackView.addArrangedSubview($0)
         }
     }
+
+    // MARK: - Bind
+
+    override func bind() {
+        super.bind()
+
+        birthInput.editingDidEndPublisher
+            .removeDuplicates()
+            .sink { [weak self] in self?.interactor?.verifyBirth($0) }
+            .store(in: &cancellables)
+
+        birthInput.textPublisher
+            .removeDuplicates()
+            .sink { [weak self] in self?.interactor?.verifyBirth($0) }
+            .store(in: &cancellables)
+    }
+
+    // MARK: - Action
+
+    @objc private func didTapMaleSelectBox() {
+        resetSelectBox()
+        interactor?.selectGender(.male)
+        maleSelectBox.updateIsSelected(true)
+    }
+
+    @objc private func didTapFemaleSelectBox() {
+        resetSelectBox()
+        interactor?.selectGender(.female)
+        femaleSelectBox.updateIsSelected(true)
+    }
+
+    private func resetSelectBox() {
+        maleSelectBox.updateIsSelected(false)
+        femaleSelectBox.updateIsSelected(false)
+    }
 }
 
 // MARK: - Display Logic
@@ -203,9 +206,7 @@ extension ProfileEditBirthGenderViewController: ProfileEditBirthGenderDisplayLog
 
 // MARK: - Scene
 
-extension ProfileEditBirthGenderViewController: ProfileEditBirthGenderScene {
-    
-}
+extension ProfileEditBirthGenderViewController: ProfileEditBirthGenderScene {}
 
 
 // MARK: - Const
