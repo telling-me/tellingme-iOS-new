@@ -25,8 +25,8 @@ public final class InputField: UIView {
     private var cancellables = Set<AnyCancellable>()
 
     private let containerView = UIStackView()
-    private var textField = TextField()
-    private var lineView = UIView()
+    private let textField = TextField()
+    private let lineView = UIView()
     private let errorLabel = UILabel()
 
     private let validitySubject = CurrentValueSubject<Validity, Never>(.valid)
