@@ -39,8 +39,13 @@ public final class ProfileEditSceneBuilder {
 
 extension ProfileEditSceneBuilder {
     public func showProfileEditScene(
+        socialType: EditingProfile.SocialType? = nil, // Note: 회원가입인 경우 socialType을 주입합니다.
         from viewController: UIViewController
     ) {
+        if let socialType {
+            dataStore.editingProfile = EditingProfile(socialType: socialType, profileInfo: .init())
+        }
+
         let startViewController = nicknameViewController()
 
         // Note: Set up navigation (로그인에서 설정된다면 제거 필요)

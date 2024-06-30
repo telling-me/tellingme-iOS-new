@@ -51,7 +51,10 @@ extension LoginViewController {
                     ProfileEditSceneBuilder(
                         navigationController: navigationController
                     )
-                    .showProfileEditScene(from: self)
+                    .showProfileEditScene(
+                        socialType: .kakao,
+                        from: self
+                    )
                 }
             }
     }
