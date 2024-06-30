@@ -41,7 +41,7 @@ extension SelectBox.Attributes {
         return attributes
     }
 
-    func withIsDisables(_ isDisabled: Bool) -> Self {
+    func withIsDisabled(_ isDisabled: Bool) -> Self {
         var attributes = self
         attributes.isDisabled = isDisabled
         return attributes
