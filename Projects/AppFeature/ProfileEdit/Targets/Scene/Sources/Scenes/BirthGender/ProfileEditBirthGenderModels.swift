@@ -11,5 +11,7 @@ import Foundation
 import AppCore_Entity
 
 enum ProfileEditBirthGender {
-    
+    enum BirthErrorType {
+        case invalidForm
+    }
 }
